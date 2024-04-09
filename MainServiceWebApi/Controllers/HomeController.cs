@@ -1,3 +1,4 @@
+using MainServiceWebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
@@ -17,7 +18,7 @@ namespace MainServiceWebApi.Controllers
         public async Task<IActionResult> Index()
         {
             var doctors = await _service.GetDoctors();
-            return View(doctors.ToDoctorsVM());
+            return View(doctors.Select(doc => doc.ToDoctorVM()).ToList());
         }
     }
 }

@@ -1,6 +1,5 @@
 using MainServiceWebApi.Configs;
 using MassTransit;
-using Microsoft.OpenApi.Models;
 using Services.Abstractions;
 using Services.Implementations;
 
@@ -32,11 +31,6 @@ namespace MainServiceWebApi
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-            });
             /*builder.Services.AddMassTransit(x =>
             {
                 x.AddConsumer<MainConsumer>();
@@ -70,11 +64,6 @@ namespace MainServiceWebApi
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger(c =>
-                {
-                    c.RouteTemplate = "/swagger/{documentName}/swagger.json";
-                });
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             }
             app.UseHttpsRedirection();
 
