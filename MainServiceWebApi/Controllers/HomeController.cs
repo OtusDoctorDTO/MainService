@@ -1,19 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstractions;
 
 namespace MainServiceWebApi.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IMainService _service;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IMainService service)
         {
             _logger = logger;
+            _service = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var doctors = await _service.GetDoctors();
+            return View(doctors.ToDoctorsVM());
         }
     }
 }
