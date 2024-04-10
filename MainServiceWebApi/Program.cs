@@ -1,6 +1,5 @@
 using Domain.Entities.Configs;
 using MassTransit;
-using Microsoft.Extensions.Configuration;
 using Services.Abstractions;
 using Services.Implementations;
 
@@ -58,7 +57,7 @@ namespace MainServiceWebApi
                     cfg.ConfigureEndpoints(context);
                 });
             });*/
-
+            builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
 
             var app = builder.Build();
