@@ -1,32 +1,25 @@
-using MainServiceWebApi.Models;
+using Domain.Entities.Configs;
+using MainServiceWebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Services.Abstractions;
 
 namespace MainServiceWebApi.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IMainService _service;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IMainService service)
         {
             _logger = logger;
+            _service = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var doctors = await _service.GetDoctors();
+            return View(doctors.Select(doc => doc.ToDoctorVM()).ToList());
         }
     }
 }
