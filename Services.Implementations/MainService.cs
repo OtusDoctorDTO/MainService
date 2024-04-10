@@ -29,17 +29,17 @@ namespace Services.Implementations
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
                 var doctors = JsonConvert.DeserializeObject<List<DoctorDTO>>(data);
-                return doctors;
+                if (doctors?.Any() ?? false)
+                    return doctors;
             }
             catch (Exception e)
             {
                 _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
             }
-            return null;
             return new List<DoctorDTO>()
             {
                 new()
-                { 
+                {
                     Id = Guid.Parse("bb4a3fac-1d7d-4705-bac8-4d0f8e546042"),
                     User = new HelpersDTO.Base.Models.BaseUserDTO()
                     {
