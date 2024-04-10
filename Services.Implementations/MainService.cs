@@ -1,17 +1,41 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
+﻿using Domain.Entities.Configs;
+using HelpersDTO.Doctor.DTO.Models;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Services.Abstractions;
+using System.Text;
 
 namespace Services.Implementations
 {
     public class MainService : IMainService
     {
-        public MainService()
+        private readonly ILogger<MainService> _logger;
+        private readonly IApplicationConfig _config;
+        public MainService(IApplicationConfig config, ILogger<MainService> logger)
         {
-                
+            _config = config;
+            _logger = logger;
         }
 
         public async Task<List<DoctorDTO>> GetDoctors()
         {
+            try
+            {
+                var url = $"{_config.DoctorHost}/api/Doctor";
+
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                var doctors = JsonConvert.DeserializeObject<List<DoctorDTO>>(data);
+                return doctors;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
+            }
+            return null;
             return new List<DoctorDTO>()
             {
                 new()

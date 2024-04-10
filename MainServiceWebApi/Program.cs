@@ -1,4 +1,4 @@
-using MainServiceWebApi.Configs;
+using Domain.Entities.Configs;
 using MassTransit;
 using Services.Abstractions;
 using Services.Implementations;
@@ -22,10 +22,10 @@ namespace MainServiceWebApi
             string connection = configuration!.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connection))
                 throw new ConfigurationException("Не удалось прочитать строку подключения");
+            builder = WebApplication.CreateBuilder(args);
 
             //builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connection));
-
-            builder.Services.AddTransient<IMainService, MainService>();
+            builder.Services.AddControllersWithViews();
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -57,9 +57,12 @@ namespace MainServiceWebApi
                     cfg.ConfigureEndpoints(context);
                 });
             });*/
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddSingleton(receptionConfig);
+            builder.Services.AddTransient<IMainService, MainService>();
 
             var app = builder.Build();
+
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -71,8 +74,6 @@ namespace MainServiceWebApi
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseAuthorization();
 
             app.MapControllers();
 
