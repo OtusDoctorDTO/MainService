@@ -1,7 +1,11 @@
 using Domain.Entities.Configs;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Services.Implementations;
+using System.Text;
 
 namespace MainServiceWebApi
 {
@@ -25,6 +29,26 @@ namespace MainServiceWebApi
             builder = WebApplication.CreateBuilder(args);
 
             //builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connection));
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+
+                    };
+                });
+
             builder.Services.AddControllersWithViews();
 
             // Add services to the container.
