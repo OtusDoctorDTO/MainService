@@ -13,7 +13,7 @@ namespace MainServiceWebApi
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile("appsettings.Development.json", true)
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true)
                 .Build();
 
             if (configuration.Get<ApplicationConfig>() is not IApplicationConfig receptionConfig)

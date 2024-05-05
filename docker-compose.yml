@@ -1,0 +1,31 @@
+version: '3.5'
+services:
+  main-service:
+    build: .
+    container_name: Web-Api
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      rabbit-mq:
+        condition: service_healthy
+  rabbit-mq: 
+    image: rabbitmq:management
+    container_name: Rabbit
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+
+networks:
+  webnet:
+    name: webnet
+    driver: bridge
