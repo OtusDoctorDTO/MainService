@@ -1,4 +1,4 @@
-using Domain.Entities.Configs;
+using MainServiceWebApi.Configs
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,12 +1,9 @@
-﻿using Domain.Entities.Configs;
-using HelpersDTO.Authentication;
+﻿using HelpersDTO.Authentication;
 using HelpersDTO.Authentication.DTO.Models;
-using HelpersDTO.Doctor.DTO.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Services.Abstractions;
-using System.Net.Http;
-using System.Text;
+using System.Net.Http.Json;
 
 namespace Services.Implementations
 {
@@ -27,12 +24,13 @@ namespace Services.Implementations
                 var url = $"{_config.AuthHost}/User/Login";
                 var client = new HttpClient();
                 var json = JsonConvert.SerializeObject(login);
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7249/User/Login");
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
                 var content = new StringContent(json, null, "application/json");
                 request.Content = content;
                 var response = await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                if (response == null)
+                    throw new ArgumentNullException("Не пришел ответ");
+                return await response.Content.ReadFromJsonAsync<LoginResponse>();
             }
             catch (Exception e)
             {
@@ -41,9 +39,26 @@ namespace Services.Implementations
             return null;
         }
 
-        public Task<RegistrationResponse> RegisterAsync(RegisterDTO register)
+        public async Task<RegistrationResponse?> RegisterAsync(RegisterDTO register)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = $"{_config.AuthHost}/User/Register";
+                var client = new HttpClient();
+                var json = JsonConvert.SerializeObject(register);
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+                var content = new StringContent(json, null, "application/json");
+                request.Content = content;
+                var response = await client.SendAsync(request);
+                if(response == null)
+                    throw new ArgumentNullException("Не пришел ответ");
+                return await response!.Content.ReadFromJsonAsync<RegistrationResponse>();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка при авторизации: {e}", e);
+            }
+            return null;
         }
     }
 }

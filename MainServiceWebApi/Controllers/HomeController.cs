@@ -1,4 +1,4 @@
-using Domain.Entities.Configs;
+using MainServiceWebApi.Configs
 using MainServiceWebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;

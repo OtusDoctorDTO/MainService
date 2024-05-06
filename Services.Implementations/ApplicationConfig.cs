@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Configs
+﻿using Services.Abstractions;
+
+namespace Services.Implementations
 {
     public class ApplicationConfig: IApplicationConfig
     {

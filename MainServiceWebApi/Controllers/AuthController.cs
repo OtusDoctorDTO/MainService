@@ -1,7 +1,8 @@
-﻿using MainServiceWebApi.Models;
+﻿using Domain.Entities;
+using HelpersDTO.Authentication.DTO.Models;
+using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
-using HelpersDTO.Authentication.DTO.Models;
 
 namespace MainServiceWebApi.Controllers
 {
@@ -23,13 +24,53 @@ namespace MainServiceWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _accountService.LoginAsync(new LoginDTO()
+                var loginResponce = await _accountService.LoginAsync(new LoginDTO()
                 {
                     Email = login.Email ?? "",
                     Password = login.Password ?? "",
                     PhoneNumber = ""
                 });
+
+                if(!loginResponce?.Flag ?? true)
+                {
+                    ModelState.AddModelError("", loginResponce?.Message ?? "При авторизации произошла ошибка. Повторите попытку");
+                    return View(login);
+                }
             }
+
+
+
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var registerResponce = await _accountService.RegisterAsync(new RegisterDTO()
+                {
+                    Email = model.Email,
+                    Password = model.Password,
+                    Phone = model.Phone,
+                    Role = new RoleDTO()
+                    {
+                        Name = Constants.User
+                    }
+                });
+
+                if (!registerResponce?.Flag ?? false)
+                {
+                    registerResponce?.Messages.ForEach(message => ModelState.AddModelError("", message));
+                    return View(model);
+                }
+            }
+
+
+
+
             return RedirectToAction("Index", "Home");
         }
     }
