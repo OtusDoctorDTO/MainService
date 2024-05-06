@@ -5,6 +5,8 @@ using HelpersDTO.Doctor.DTO.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Services.Abstractions;
+using System.Net.Http;
+using System.Text;
 
 namespace Services.Implementations
 {
@@ -24,14 +26,13 @@ namespace Services.Implementations
             {
                 var url = $"{_config.AuthHost}/User/Login";
                 var client = new HttpClient();
+                var json = JsonConvert.SerializeObject(login);
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7249/User/Login");
-                var content = new StringContent(JsonConvert.SerializeObject(login), null, "application/json");
+                var content = new StringContent(json, null, "application/json");
                 request.Content = content;
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                var data = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<LoginResponse>(data);
-                return result;
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
             }
             catch (Exception e)
             {

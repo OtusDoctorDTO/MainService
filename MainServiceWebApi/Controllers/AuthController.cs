@@ -1,12 +1,16 @@
 ﻿using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstractions;
+using HelpersDTO.Authentication.DTO.Models;
 
 namespace MainServiceWebApi.Controllers
 {
     public class AuthController : Controller
     {
-        public AuthController()
+        private readonly IAccountService _accountService;
+        public AuthController(IAccountService accountService)
         {
+            _accountService = accountService;
         }
         public IActionResult Index()
         {
@@ -19,7 +23,12 @@ namespace MainServiceWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                var user = await _accountService.LoginAsync(new LoginDTO()
+                {
+                    Email = login.Email ?? "",
+                    Password = login.Password ?? "",
+                    PhoneNumber = ""
+                });
             }
             return RedirectToAction("Index", "Home");
         }
