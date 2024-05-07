@@ -1,5 +1,4 @@
-﻿using MainServiceWebApi.Configs
-using HelpersDTO.Doctor.DTO.Models;
+﻿using HelpersDTO.Doctor.DTO.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Services.Abstractions;

@@ -5,5 +5,6 @@
         RabbitMqConfig BusConfig { get; set; }
         string DoctorHost { get; set; }
         string AuthHost { get; set; }
+        AuthOptions AuthOptions { get; set; }
     }
 }

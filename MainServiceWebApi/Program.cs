@@ -1,8 +1,8 @@
-using MainServiceWebApi.Configs
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Providers.Contracts;
 using Services.Abstractions;
 using Services.Implementations;
 using System.Text;
@@ -65,8 +65,8 @@ namespace MainServiceWebApi
             });*/
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
-            builder.Services.AddTransient<IAccountService, AccountService>();        
-
+            builder.Services.AddTransient<IAccountService, AccountService>();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             var app = builder.Build();
 
             
