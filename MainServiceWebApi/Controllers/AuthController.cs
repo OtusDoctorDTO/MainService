@@ -1,10 +1,7 @@
-﻿using Domain.Entities;
-using HelpersDTO.Authentication.DTO.Models;
+﻿using HelpersDTO.Authentication.DTO.Models;
 using MainServiceWebApi.Models;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Providers.Contracts;
 using Services.Abstractions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -31,9 +28,6 @@ namespace MainServiceWebApi.Controllers
         {
             try
             {
-
-
-
                 if (ModelState.IsValid)
                 {
                     var loginResponce = await _accountService.LoginAsync(new LoginDTO()
@@ -54,13 +48,11 @@ namespace MainServiceWebApi.Controllers
                     var validationOptions = new TokenValidationParameters()
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = _config.AuthOptions.Issuer,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
                         ValidateAudience = false,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config.AuthOptions.Key)),
-                        NameClaimType = "aud",
-                        ClockSkew = TimeSpan.FromSeconds(30)
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = _config.AuthOptions.Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.AuthOptions.Key))
                     };
                     var tokenValidationResult = await tokenHandler.ValidateTokenAsync(loginResponce!.token, validationOptions);
                 }
