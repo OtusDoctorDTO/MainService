@@ -17,8 +17,16 @@ namespace MainServiceWebApi.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var doctors = await _service.GetDoctors();
-            return View(doctors.Select(doc => doc.ToDoctorVM()).ToList());
+            try
+            {
+                var doctors = await _service.GetDoctors();
+                return View(doctors.Select(doc => doc.ToDoctorVM()).ToList());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка на главной странице {mainMessage}", e.Message);
+            }
+            return RedirectToAction("Index", "Error");
         }
     }
 }
