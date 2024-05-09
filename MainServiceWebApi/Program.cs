@@ -19,11 +19,11 @@ namespace MainServiceWebApi
                 .Build();
 
             if (configuration.Get<ApplicationConfig>() is not IApplicationConfig receptionConfig)
-                throw new ConfigurationException("Íå óäàëîñü ïðî÷èòàòü êîíôèãóðàöèþ ñåðâèñà");
+                throw new ConfigurationException("ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ñ€Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ ÐºÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸ÑŽ ÑÐµÑ€Ð²Ð¸ÑÐ°");
 
             string connection = configuration!.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connection))
-                throw new ConfigurationException("Íå óäàëîñü ïðî÷èòàòü ñòðîêó ïîäêëþ÷åíèÿ");
+                throw new ConfigurationException("ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ñ€Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ");
             builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(x=>
