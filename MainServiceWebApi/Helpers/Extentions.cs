@@ -1,4 +1,5 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
+﻿using HelpersDTO.AppointmentDto.DTO;
+using HelpersDTO.Doctor.DTO.Models;
 using MainServiceWebApi.Models;
 
 namespace MainServiceWebApi.Helpers
@@ -15,6 +16,15 @@ namespace MainServiceWebApi.Helpers
                 LastName = doctor.User.LastName,
                 MiddleName = doctor.User.MiddleName,
                 Specialty = doctor.Specialty,
+            };
+        }
+
+        public static ShortAppointnmentViewModel? ToAppointmentVM(this ShortAppointnmentDTO appointnment)
+        {
+            if (appointnment == null) return null;
+            return new ShortAppointnmentViewModel()
+            {
+                Id = appointnment.Id,
             };
         }
     }
