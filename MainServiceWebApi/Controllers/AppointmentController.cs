@@ -21,10 +21,10 @@ namespace MainServiceWebApi.Controllers
                 }
                 return RedirectToAction("Index", "Auth", new{ returnUrl = "Appointment/Index"});
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw;
+                _logger.LogError("При попытке записи произошла ошибка {message}", e.Message);
             }
             return View();
         }

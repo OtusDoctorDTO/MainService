@@ -19,7 +19,7 @@ namespace MainServiceWebApi.Models
         [Required(ErrorMessage = "Введите пароль"), DataType(DataType.Password), Compare(nameof(Password))]
         [StringLength(20, MinimumLength = 6, ErrorMessage = "Пароль должен быть минимум 6 символов, максимум 20 символов")]
         public string ConfirmPassword { get; set; }
-        public bool RememberMe { get; set; } = true;
+        public bool RememberMe { get; set; }
         public string? ReturnUrl { get; set; }
     }
 }
