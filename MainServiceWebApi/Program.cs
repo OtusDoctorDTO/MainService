@@ -1,7 +1,9 @@
-using Domain.Entities.Configs;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Services.Implementations;
+using System.Text;
 
 namespace MainServiceWebApi
 {
@@ -17,14 +19,47 @@ namespace MainServiceWebApi
                 .Build();
 
             if (configuration.Get<ApplicationConfig>() is not IApplicationConfig receptionConfig)
-                throw new ConfigurationException("Íå óäàëîñü ïðî÷èòàòü êîíôèãóðàöèþ ñåðâèñà");
+                throw new ConfigurationException("ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ñ€Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ ÐºÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸ÑŽ ÑÐµÑ€Ð²Ð¸ÑÐ°");
 
             string connection = configuration!.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connection))
-                throw new ConfigurationException("Íå óäàëîñü ïðî÷èòàòü ñòðîêó ïîäêëþ÷åíèÿ");
+                throw new ConfigurationException("ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ñ€Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ");
             builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddAuthentication(x=>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(x=>
+                {
+                    x.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = receptionConfig.AuthOptions.Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(receptionConfig.AuthOptions.Key))
+                    };
+                    x.Events = new JwtBearerEvents()
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies[receptionConfig.CookiesName];
+                            return Task.CompletedTask;
+                        }
+                    };
+                })
+                .AddCookie(options =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                    options.SlidingExpiration = true;
+                    options.AccessDeniedPath = "/Auth/";
+                });
+            builder.Services.AddAuthorization();
 
-            //builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connection));
             builder.Services.AddControllersWithViews();
 
             // Add services to the container.
@@ -59,7 +94,9 @@ namespace MainServiceWebApi
             });*/
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
-
+            builder.Services.AddTransient<IAccountService, AccountService>();
+            builder.Services.AddTransient<ITokenService, TokenService>();
+            
             var app = builder.Build();
 
             
@@ -75,13 +112,17 @@ namespace MainServiceWebApi
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapDefaultControllerRoute();
             app.MapControllers();
 
             app.UseRouting();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}");
 
             app.Run();
         }
