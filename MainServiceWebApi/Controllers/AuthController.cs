@@ -1,4 +1,5 @@
-﻿using HelpersDTO.Authentication.DTO.Models;
+﻿using HelpersDTO.Authentication;
+using HelpersDTO.Authentication.DTO.Models;
 using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
@@ -14,7 +15,7 @@ namespace MainServiceWebApi.Controllers
 
 
         public AuthController(
-            IAccountService accountService, 
+            IAccountService accountService,
             IApplicationConfig config,
             ITokenService tokenService,
             ILogger<AuthController> logger)
@@ -24,9 +25,9 @@ namespace MainServiceWebApi.Controllers
             _tokenService = tokenService;
             _logger = logger;
         }
-        public IActionResult Index()
+        public IActionResult Index(string? returnUrl = null)
         {
-            return View(new LoginViewModel());
+            return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -55,6 +56,8 @@ namespace MainServiceWebApi.Controllers
                     if (result)
                     {
                         HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
+                        if(!string.IsNullOrEmpty(login.ReturnUrl))
+                            Redirect(login.ReturnUrl);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -65,6 +68,12 @@ namespace MainServiceWebApi.Controllers
             }
             ModelState.AddModelError("", "При авторизации произошла ошибка. Повторите попытку");
             return View("Index", login);
+        }
+
+        [HttpGet]
+        public IActionResult Register(string? returnUrl = null)
+        {
+            return View(new RegisterViewModel() { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -79,18 +88,29 @@ namespace MainServiceWebApi.Controllers
                     Email = model.Email,
                     Password = model.Password,
                     Phone = model.Phone,
+                    RememberMe = model.RememberMe,
                     Role = new RoleDTO()
                     {
                         Name = Domain.Entities.Constants.User
                     }
                 });
 
-                if (!registerResponce?.Flag ?? false)
+                if ((!registerResponce?.Flag ?? true) || registerResponce!.Messages.Any())
                 {
                     registerResponce?.Messages.ForEach(message => ModelState.AddModelError("", message));
                     return View(model);
                 }
+
+                if (model.RememberMe)
+                {
+                    var result = await _tokenService.Validate(registerResponce!.Token);
+                    if (result)
+                        HttpContext.Response.Cookies.Append(_config.CookiesName, registerResponce!.Token!);
+                }
             }
+            if (!string.IsNullOrEmpty(model.ReturnUrl))
+                Redirect(model.ReturnUrl);
+
             return RedirectToAction("Index", "Home");
         }
     }

@@ -4,9 +4,6 @@ namespace MainServiceWebApi.Models
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Введите имя")]
-        public string Login { get; set; }
-
         [Required(ErrorMessage = "Введите электронную почту")]
         [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Неверный формат электронной почты")]
         public string Email { get; set; }
@@ -22,5 +19,7 @@ namespace MainServiceWebApi.Models
         [Required(ErrorMessage = "Введите пароль"), DataType(DataType.Password), Compare(nameof(Password))]
         [StringLength(20, MinimumLength = 6, ErrorMessage = "Пароль должен быть минимум 6 символов, максимум 20 символов")]
         public string ConfirmPassword { get; set; }
+        public bool RememberMe { get; set; } = true;
+        public string? ReturnUrl { get; set; }
     }
 }
