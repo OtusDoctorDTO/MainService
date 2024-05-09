@@ -8,5 +8,6 @@ namespace Services.Implementations
         public string DoctorHost { get; set; } = default!;
         public string AuthHost { get; set; } = default!;
         public AuthOptions AuthOptions { get; set; } = default!;
+        public string CookiesName { get; set; } = default!;
     }
 }

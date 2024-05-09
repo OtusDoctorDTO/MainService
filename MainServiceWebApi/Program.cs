@@ -27,8 +27,39 @@ namespace MainServiceWebApi
             if (string.IsNullOrEmpty(connection))
                 throw new ConfigurationException("Не удалось прочитать строку подключения");
             builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.AddAuthentication();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddAuthentication(x=>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(x=>
+                {
+                    x.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = receptionConfig.AuthOptions.Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(receptionConfig.AuthOptions.Key))
+                    };
+                    x.Events = new JwtBearerEvents()
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies[receptionConfig.CookiesName];
+                            return Task.CompletedTask;
+                        }
+                    };
+                })
+                .AddCookie(options =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                    options.SlidingExpiration = true;
+                    options.AccessDeniedPath = "/Auth/";
+                });
             builder.Services.AddAuthorization();
 
             builder.Services.AddControllersWithViews();
@@ -82,6 +113,10 @@ namespace MainServiceWebApi
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapDefaultControllerRoute();
             app.MapControllers();
 
             app.UseRouting();

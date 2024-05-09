@@ -40,7 +40,7 @@ namespace MainServiceWebApi.Controllers
                     if (!loginResponce?.Flag ?? true)
                     {
                         ModelState.AddModelError("", loginResponce?.Message ?? "При авторизации произошла ошибка. Повторите попытку");
-                        return View(login);
+                        return View("Index", login);
                     }
 
                     var tokenHandler = new JwtSecurityTokenHandler();
@@ -55,13 +55,16 @@ namespace MainServiceWebApi.Controllers
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.AuthOptions.Key))
                     };
                     var tokenValidationResult = await tokenHandler.ValidateTokenAsync(loginResponce!.token, validationOptions);
+                    if (tokenValidationResult.IsValid)
+                    {
+                        HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);   
+                    }
                 }
             }
             catch (Exception)
             {
                 throw;
             }
-
             return RedirectToAction("Index", "Home");
         }
 
