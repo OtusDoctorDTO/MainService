@@ -108,7 +108,7 @@ namespace MainServiceWebApi.Controllers
                         HttpContext.Response.Cookies.Append(_config.CookiesName, registerResponce!.Token!);
                     else
                     {
-                        ModelState.AddModelError("", "Не удалось залогиниться. Попробуйте войти еще раз");
+                        ModelState.AddModelError("", "Не удалось залогиниться. Попробуйте войти самостоятельно");
                     }
                 }
             if (!string.IsNullOrEmpty(model.ReturnUrl))

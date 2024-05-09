@@ -11,7 +11,6 @@ namespace MainServiceWebApi.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
         public IActionResult Index(DoctorViewModel doctor)
         {
             try
@@ -20,6 +19,7 @@ namespace MainServiceWebApi.Controllers
                 {
 
                 }
+                return RedirectToAction("Index", "Auth", new{ returnUrl = "Appointment/Index"});
             }
             catch (Exception)
             {
