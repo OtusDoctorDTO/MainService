@@ -95,6 +95,8 @@ namespace MainServiceWebApi
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
             builder.Services.AddTransient<IAccountService, AccountService>();
+            builder.Services.AddTransient<ITokenService, TokenService>();
+            
             var app = builder.Build();
 
             

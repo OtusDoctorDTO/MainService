@@ -1,10 +1,7 @@
 ﻿using HelpersDTO.Authentication.DTO.Models;
 using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
 namespace MainServiceWebApi.Controllers
 {
@@ -12,10 +9,20 @@ namespace MainServiceWebApi.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IApplicationConfig _config;
-        public AuthController(IAccountService accountService, IApplicationConfig config)
+        private readonly ITokenService _tokenService;
+        ILogger<AuthController> _logger;
+
+
+        public AuthController(
+            IAccountService accountService, 
+            IApplicationConfig config,
+            ITokenService tokenService,
+            ILogger<AuthController> logger)
         {
             _accountService = accountService;
             _config = config;
+            _tokenService = tokenService;
+            _logger = logger;
         }
         public IActionResult Index()
         {
@@ -30,6 +37,7 @@ namespace MainServiceWebApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    // захешировать пароль
                     var loginResponce = await _accountService.LoginAsync(new LoginDTO()
                     {
                         Email = login.Email ?? "",
@@ -43,29 +51,20 @@ namespace MainServiceWebApi.Controllers
                         return View("Index", login);
                     }
 
-                    var tokenHandler = new JwtSecurityTokenHandler();
-
-                    var validationOptions = new TokenValidationParameters()
+                    var result = await _tokenService.Validate(loginResponce!.token);
+                    if (result)
                     {
-                        ValidateIssuer = true,
-                        ValidateAudience = false,
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = _config.AuthOptions.Issuer,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.AuthOptions.Key))
-                    };
-                    var tokenValidationResult = await tokenHandler.ValidateTokenAsync(loginResponce!.token, validationOptions);
-                    if (tokenValidationResult.IsValid)
-                    {
-                        HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);   
+                        HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                _logger.LogError(e, "При авторазиции произошла ошибка");
             }
-            return RedirectToAction("Index", "Home");
+            ModelState.AddModelError("", "При авторизации произошла ошибка. Повторите попытку");
+            return View("Index", login);
         }
 
         [HttpPost]
@@ -74,6 +73,7 @@ namespace MainServiceWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
+                // захешировать пароль
                 var registerResponce = await _accountService.RegisterAsync(new RegisterDTO()
                 {
                     Email = model.Email,
@@ -91,10 +91,6 @@ namespace MainServiceWebApi.Controllers
                     return View(model);
                 }
             }
-
-
-
-
             return RedirectToAction("Index", "Home");
         }
     }
