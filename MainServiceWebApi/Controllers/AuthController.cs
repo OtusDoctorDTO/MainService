@@ -106,12 +106,17 @@ namespace MainServiceWebApi.Controllers
                     var result = await _tokenService.Validate(registerResponce!.Token);
                     if (result)
                         HttpContext.Response.Cookies.Append(_config.CookiesName, registerResponce!.Token!);
+                    else
+                    {
+                        ModelState.AddModelError("", "Не удалось залогиниться. Попробуйте войти еще раз");
+                    }
                 }
-            }
             if (!string.IsNullOrEmpty(model.ReturnUrl))
                 Redirect(model.ReturnUrl);
 
             return RedirectToAction("Index", "Home");
+            }
+            return View(model);
         }
     }
 }
