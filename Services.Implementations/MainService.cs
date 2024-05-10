@@ -48,7 +48,7 @@ namespace Services.Implementations
         {
             try
             {
-                var url = $"{_config.AppointnmentHost}/Home/GetAppointments";
+                var url = $"{_config.AppointnmentHost}/api/Home/GetAppointments";
                 var client = new HttpClient();
                 var json = JsonConvert.SerializeObject(appointmentRequest);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);

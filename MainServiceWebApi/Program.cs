@@ -96,7 +96,8 @@ namespace MainServiceWebApi
             builder.Services.AddTransient<IMainService, MainService>();
             builder.Services.AddTransient<IAccountService, AccountService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
-            
+            builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+
             var app = builder.Build();
 
             

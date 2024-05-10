@@ -29,13 +29,14 @@ namespace MainServiceWebApi.Controllers
             {
                 var request = new ShortAppointmentRequest()
                 {
-                    Count = 5,
+                    Count = 20,
                     ForDate = _dateTimeProvider.GetNow().AddDays(5),
                     SinceDate = _dateTimeProvider.GetNow(),
                     Statuses = [(int)StatusEnum.Free]
                 };
                 var appointments = await _service.GetActiveAppointnmentsAsync(request);
-                return View(appointments.Select(app => app.ToAppointmentVM()).ToList());
+                if(appointments?.Any() ?? false)
+                    return View(appointments.Select(app => app.ToAppointmentVM()).ToList());
             }
             catch (Exception e)
             {
