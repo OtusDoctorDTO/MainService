@@ -96,7 +96,14 @@ namespace MainServiceWebApi
             builder.Services.AddTransient<IMainService, MainService>();
             builder.Services.AddTransient<IAccountService, AccountService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
-            
+
+            //Добавление страницы Пациента
+            builder.Services.AddHttpClient<IPatientServiceClient, PatientServiceClient>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7056"); // Адрес API PatientService
+            });
+
+
             var app = builder.Build();
 
             
