@@ -57,7 +57,9 @@ namespace Services.Implementations
                 var response = await client.SendAsync(request);
                 if (response == null)
                     throw new ArgumentNullException("Не пришел ответ");
-                var appointments = await response!.Content.ReadFromJsonAsync<List<ShortAppointnmentDTO>>();
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                var appointments = JsonConvert.DeserializeObject<List<ShortAppointnmentDTO>>(data);
                 return appointments;
             }
             catch (Exception e)
@@ -65,6 +67,31 @@ namespace Services.Implementations
                 _logger.LogError("Произошла ошибка при получении доступных записей: {message}", e);
             }
             return null;
+        }
+
+        public async Task<List<DoctorDTO>> GetDoctorsByIds(Guid[] ids)
+        {
+            try
+            {
+                var url = $"{_config.DoctorHost}/api/GetDoctorsByIds";
+                var json = JsonConvert.SerializeObject(ids);
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+                var content = new StringContent(json, null, "application/json");
+                request.Content = content;
+                var client = new HttpClient();
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                var doctors = JsonConvert.DeserializeObject<List<DoctorDTO>>(data);
+                if (doctors?.Any() ?? false)
+                    return doctors;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
+            }
+            // тестовые данные (потом удалить)
+            return Constants.BaseDoctors;
         }
     }
 }

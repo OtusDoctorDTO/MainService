@@ -1,6 +1,6 @@
 using HelpersDTO.AppointmentDto.Enums;
 using HelpersDTO.Authentication;
-using MainServiceWebApi.Helpers;
+using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
@@ -31,12 +31,29 @@ namespace MainServiceWebApi.Controllers
                 {
                     Count = 20,
                     ForDate = _dateTimeProvider.GetNow().AddDays(5),
-                    SinceDate = _dateTimeProvider.GetNow(),
+                    // удалить тестовые данные .AddDays(-60)
+                    SinceDate = _dateTimeProvider.GetNow().AddDays(-60),
                     Statuses = [(int)StatusEnum.Free]
                 };
                 var appointments = await _service.GetActiveAppointnmentsAsync(request);
-                if(appointments?.Any() ?? false)
-                    return View(appointments.Select(app => app.ToAppointmentVM()).ToList());
+                if (appointments?.Any() ?? false)
+                {
+                    var doctorsIds = appointments!.Select(app => app.DoctorId).Distinct().ToArray();
+                    var doctors = await _service.GetDoctorsByIds(doctorsIds);
+                    var dataVM = doctors.Select(doctor => new MainPageViewModel()
+                    {
+                        DoctorId = doctor.Id,
+                        FullName = $"{doctor.User.LastName} {doctor.User.FirstName} {doctor.User.MiddleName}".Trim(),
+                        Appointments = appointments
+                        .GroupBy(app => app.DoctorId).Select(x => new ShortAppointmentViewModel()
+                        {
+                            Date = x.First().StartDate,
+                            Data = x.ToDictionary(x => x.Id, y => y.StartDate.TimeOfDay)
+                        }).ToList()
+                    }).ToList();
+
+                    return View(dataVM);
+                }
             }
             catch (Exception e)
             {

@@ -18,14 +18,5 @@ namespace MainServiceWebApi.Helpers
                 Specialty = doctor.Specialty,
             };
         }
-
-        public static ShortAppointnmentViewModel? ToAppointmentVM(this ShortAppointnmentDTO appointnment)
-        {
-            if (appointnment == null) return null;
-            return new ShortAppointnmentViewModel()
-            {
-                Id = appointnment.Id,
-            };
-        }
     }
 }

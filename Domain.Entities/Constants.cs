@@ -9,39 +9,62 @@ namespace Domain.Entities
 
         public static List<DoctorDTO> BaseDoctors = new List<DoctorDTO>()
         {
-                new()
+            new()
+            {
+                Id = Guid.Parse("61dd8fe5-aed3-44af-a451-823caeb2dc68"),
+                User = new HelpersDTO.Base.Models.BaseUserDTO()
                 {
-                    Id = Guid.Parse("bb4a3fac-1d7d-4705-bac8-4d0f8e546042"),
-                    User = new HelpersDTO.Base.Models.BaseUserDTO()
-                    {
-                        LastName = "Иванов",
-                        FirstName = "Иван",
-                        MiddleName = "Иванович"
-                    },
-                    Specialty = "Терапевт"
+                    LastName = "Иванов",
+                    FirstName = "Иван",
+                    MiddleName = "Иванович"
                 },
-                new()
+                Specialty = "Терапевт"
+            },
+            new()
+            {
+                Id = Guid.Parse("c302105d-1c7e-4db4-9380-d91146596f05"),
+                User = new HelpersDTO.Base.Models.BaseUserDTO()
                 {
-                    Id = Guid.Parse("e7d7bce8-2f38-409e-809d-d9692bffb20c"),
-                    User = new HelpersDTO.Base.Models.BaseUserDTO()
-                    {
-                        LastName = "Петров",
-                        FirstName = "Петр",
-                        MiddleName = "Петрович"
-                    },
-                    Specialty = "Терапевт"
+                    LastName = "Петров",
+                    FirstName = "Петр",
+                    MiddleName = "Петрович"
                 },
-                new()
+                Specialty = "Терапевт"
+            },
+            new()
+            {
+                Id = Guid.Parse("eec214ba-7605-4392-9ec4-e788ded53bea"),
+                User = new HelpersDTO.Base.Models.BaseUserDTO()
                 {
-                    Id = Guid.Parse("6787607a-7c57-4832-8a31-e57a9aa59c0b"),
-                    User = new HelpersDTO.Base.Models.BaseUserDTO()
-                    {
-                        LastName = "Сидоров",
-                        FirstName = "Семен",
-                        MiddleName = "Семенович"
-                    },
-                    Specialty = "Терапевт"
+                    LastName = "Сидоров",
+                    FirstName = "Семен",
+                    MiddleName = "Семенович"
                 },
+                Specialty = "Терапевт"
+            },
+
+            new()
+            {
+                Id = Guid.Parse("a372bf3d-efe9-4f0d-b16b-ac550a3947d2"),
+                User = new HelpersDTO.Base.Models.BaseUserDTO()
+                {
+                    LastName = "Кузнецов",
+                    FirstName = "Иван",
+                    MiddleName = "Петрович"
+                },
+                Specialty = "Терапевт"
+            },
+            new()
+            {
+                Id = Guid.Parse("c5508ee0-fbe6-47fa-b7d3-d6438b93b43d"),
+                User = new HelpersDTO.Base.Models.BaseUserDTO()
+                {
+                    LastName = "Яковлев",
+                    FirstName = "Алексай",
+                    MiddleName = "Иванович"
+                },
+                Specialty = "Терапевт"
+            },
         };
-    }
+    };
 }
