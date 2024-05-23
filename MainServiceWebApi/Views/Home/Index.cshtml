@@ -23,11 +23,22 @@
                         <div class="card shadow-sm">
                             <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em"></text></svg>
                             <div class="card-body">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Подробнее</button>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Подробнее</button>
-                                        <a class="btn btn-sm btn-outline-secondary" href="/Appointment/Index">Записаться</a>
-                                    </div>
+                                    @foreach (var appointment in doctor.Appointments)
+                                    {
+                                        <div class="container fluid">
+                                            <div class="row">
+                                                @appointment.Date!.Value.ToString("dd.MM.yy")
+                                                <div class="col">
+                                                    @foreach (var appData in appointment.Data)
+                                                    {
+                                                        <a class="btn btn-sm btn-outline-secondary" href="/Appointment/MakeAppointment?id=@appData.Key">@string.Format("{0:00}:{1:00}", appData.Value.Hours, appData.Value.Minutes)</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                     <small class="text-muted">стаж ...</small>
                                 </div>
                             </div>
