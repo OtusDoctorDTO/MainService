@@ -45,13 +45,14 @@ namespace MainServiceWebApi.Controllers
                         DoctorId = doctor.Id,
                         FullName = $"{doctor.User.LastName} {doctor.User.FirstName} {doctor.User.MiddleName}".Trim(),
                         Appointments = appointments
-                        .GroupBy(app => app.DoctorId).Select(x => new ShortAppointmentViewModel()
+                        .Where(app => app.DoctorId == doctor.Id)
+                        .GroupBy(app => app.Date)
+                        .Select(x => new ShortAppointmentViewModel()
                         {
-                            Date = x.First().StartDate,
-                            Data = x.ToDictionary(x => x.Id, y => y.StartDate.TimeOfDay)
+                            Date = x.Key,
+                            Data = x.OrderBy(x => x.Time).ToDictionary(x => x.Id, y => y.Time)
                         }).ToList()
                     }).ToList();
-
                     return View(dataVM);
                 }
             }

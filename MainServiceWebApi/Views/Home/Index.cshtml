@@ -14,7 +14,7 @@
 
 <div class="album py-5 bg-light">
     <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="row">
             @if (Model?.Any() ?? false)
             {
                 @foreach (var doctor in Model)
@@ -23,23 +23,27 @@
                         <div class="card shadow-sm">
                             <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em"></text></svg>
                             <div class="card-body">
+                                <div>
+                                    @doctor.FullName
+                                </div>
                                 <button type="button" class="btn btn-sm btn-outline-secondary">Подробнее</button>
                                 <div class="d-flex justify-content-between align-items-center">
                                     @foreach (var appointment in doctor.Appointments)
                                     {
-                                        <div class="container fluid">
+                                        <div class="container fluid border p-3">
+                                            <div class="row form-control">
+                                                @appointment.Date.ToString("dd.MM.yy")
+                                            </div>
                                             <div class="row">
-                                                @appointment.Date!.Value.ToString("dd.MM.yy")
-                                                <div class="col">
+                                                <div>
                                                     @foreach (var appData in appointment.Data)
                                                     {
-                                                        <a class="btn btn-sm btn-outline-secondary" href="/Appointment/MakeAppointment?id=@appData.Key">@string.Format("{0:00}:{1:00}", appData.Value.Hours, appData.Value.Minutes)</a>
+                                                        <a class="btn btn-sm btn-outline-secondary" href="/Appointment/MakeAppointment?id=@appData.Key">@appData.Value</a>
                                                     }
                                                 </div>
                                             </div>
                                         </div>
                                     }
-                                    <small class="text-muted">стаж ...</small>
                                 </div>
                             </div>
                         </div>

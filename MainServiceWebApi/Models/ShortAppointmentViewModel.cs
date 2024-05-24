@@ -2,7 +2,7 @@
 {
     public class ShortAppointmentViewModel
     {
-        public DateTime? Date { get; set; }
-        public Dictionary<Guid, TimeSpan> Data { get; set; } = new();
+        public DateOnly Date { get; set; }
+        public Dictionary<Guid, TimeOnly> Data { get; set; } = new();
     }
 }
