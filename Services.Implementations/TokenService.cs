@@ -29,5 +29,7 @@ namespace Services.Implementations
             var tokenValidationResult = await tokenHandler.ValidateTokenAsync(token, validationOptions);
             return tokenValidationResult.IsValid;
         }
+
+
     }
 }
