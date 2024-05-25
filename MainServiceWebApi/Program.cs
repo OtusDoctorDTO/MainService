@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Services.Implementations;
@@ -21,7 +22,7 @@ namespace MainServiceWebApi
             if (configuration.Get<ApplicationConfig>() is not IApplicationConfig receptionConfig)
                 throw new ConfigurationException("Не удалось прочитать конфигурацию сервиса");
 
-            string connection = configuration!.GetConnectionString("DefaultConnection");
+            var connection = configuration!.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connection))
                 throw new ConfigurationException("Не удалось прочитать строку подключения");
             builder = WebApplication.CreateBuilder(args);
@@ -109,20 +110,14 @@ namespace MainServiceWebApi
                 app.UseExceptionHandler("/Error/Index");
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.MapDefaultControllerRoute();
-            app.MapControllers();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}");
-
             app.MapAreaControllerRoute(
                 name: "admin",
                 areaName: "admin",
