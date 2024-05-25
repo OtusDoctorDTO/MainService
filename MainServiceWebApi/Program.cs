@@ -119,11 +119,14 @@ namespace MainServiceWebApi
             app.MapDefaultControllerRoute();
             app.MapControllers();
 
-            app.UseRouting();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}");
+
+            app.MapAreaControllerRoute(
+                name: "admin",
+                areaName: "admin",
+                pattern: "{area:exists}/{controller=CallCenter}/{action=Index}");
 
             app.Run();
         }
