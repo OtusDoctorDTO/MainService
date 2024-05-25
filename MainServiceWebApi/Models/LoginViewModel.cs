@@ -11,5 +11,6 @@ namespace MainServiceWebApi.Models
         [Required(ErrorMessage = "Введите пароль")]
         [StringLength(35, MinimumLength = 4, ErrorMessage = "Пароль должен быть минимум 4 символа, максимум 35 символов")]
         public string Password { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }

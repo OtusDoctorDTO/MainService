@@ -14,7 +14,7 @@ namespace MainServiceWebApi.Controllers
 
 
         public AuthController(
-            IAccountService accountService, 
+            IAccountService accountService,
             IApplicationConfig config,
             ITokenService tokenService,
             ILogger<AuthController> logger)
@@ -24,9 +24,9 @@ namespace MainServiceWebApi.Controllers
             _tokenService = tokenService;
             _logger = logger;
         }
-        public IActionResult Index()
+        public IActionResult Index(string? returnUrl = null)
         {
-            return View(new LoginViewModel());
+            return View(new LoginViewModel() { ReturnUrl = returnUrl });
         }
 
         [HttpPost]
@@ -55,6 +55,8 @@ namespace MainServiceWebApi.Controllers
                     if (result)
                     {
                         HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
+                        if (!string.IsNullOrEmpty(login.ReturnUrl))
+                            Redirect(login.ReturnUrl);
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -67,31 +69,59 @@ namespace MainServiceWebApi.Controllers
             return View("Index", login);
         }
 
+        [HttpGet]
+        public IActionResult Register(string? returnUrl = null)
+        {
+            return View(new RegisterViewModel() { ReturnUrl = returnUrl });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                // захешировать пароль
-                var registerResponce = await _accountService.RegisterAsync(new RegisterDTO()
+                if (ModelState.IsValid)
                 {
-                    Email = model.Email,
-                    Password = model.Password,
-                    Phone = model.Phone,
-                    Role = new RoleDTO()
+                    // захешировать пароль
+                    var registerResponce = await _accountService.RegisterAsync(new RegisterDTO()
                     {
-                        Name = Domain.Entities.Constants.User
-                    }
-                });
+                        Email = model.Email,
+                        Password = model.Password,
+                        Phone = model.Phone,
+                        RememberMe = model.RememberMe,
+                        Role = new RoleDTO()
+                        {
+                            Name = Domain.Entities.Constants.User
+                        }
+                    });
 
-                if (!registerResponce?.Flag ?? false)
-                {
-                    registerResponce?.Messages.ForEach(message => ModelState.AddModelError("", message));
-                    return View(model);
+                    if ((!registerResponce?.Flag ?? true) || registerResponce!.Messages.Any())
+                    {
+                        registerResponce?.Messages.ForEach(message => ModelState.AddModelError("", message));
+                        return View(model);
+                    }
+
+                    if (model.RememberMe)
+                    {
+                        var result = await _tokenService.Validate(registerResponce!.Token);
+                        if (result)
+                            HttpContext.Response.Cookies.Append(_config.CookiesName, registerResponce!.Token!);
+                        else
+                            ModelState.AddModelError("", "Не удалось залогиниться. Попробуйте войти самостоятельно");
+                    }
+                    if (!string.IsNullOrEmpty(model.ReturnUrl))
+                        Redirect(model.ReturnUrl);
+
+                    return RedirectToAction("Index", "Home");
                 }
             }
-            return RedirectToAction("Index", "Home");
+            catch (Exception e)
+            {
+                _logger.LogError("При попытке совершить регистрацию произошла ошибка {register}", e.Message);
+                ModelState.AddModelError("", "Произошла неизвестная ошибка. Попробуйте еще раз");
+            }
+            return View(model);
         }
     }
 }
