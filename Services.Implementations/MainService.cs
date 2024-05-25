@@ -1,7 +1,12 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
+﻿using Domain.Entities;
+using HelpersDTO.AppointmentDto.DTO;
+using HelpersDTO.Authentication;
+using HelpersDTO.Doctor.DTO.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Services.Abstractions;
+using System.Net.Http.Json;
 using System.Text;
 
 namespace Services.Implementations
@@ -35,42 +40,58 @@ namespace Services.Implementations
             {
                 _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
             }
-            return new List<DoctorDTO>()
+            // тестовые данные (потом удалить)
+            return Constants.BaseDoctors;
+        }
+
+        public async Task<List<ShortAppointnmentDTO>?> GetActiveAppointnmentsAsync(ShortAppointmentRequest appointmentRequest)
+        {
+            try
             {
-                new()
-                {
-                    Id = Guid.Parse("bb4a3fac-1d7d-4705-bac8-4d0f8e546042"),
-                    User = new HelpersDTO.Base.Models.BaseUserDTO()
-                    {
-                        LastName = "Иванов",
-                        FirstName = "Иван",
-                        MiddleName = "Иванович"
-                    },
-                    Specialty = "Терапевт"
-                },
-                new()
-                {
-                    Id = Guid.Parse("e7d7bce8-2f38-409e-809d-d9692bffb20c"),
-                    User = new HelpersDTO.Base.Models.BaseUserDTO()
-                    {
-                        LastName = "Петров",
-                        FirstName = "Петр",
-                        MiddleName = "Петрович"
-                    },
-                    Specialty = "Терапевт"
-                },
-                new()
-                {
-                    Id = Guid.Parse("6787607a-7c57-4832-8a31-e57a9aa59c0b"),
-                    User = new HelpersDTO.Base.Models.BaseUserDTO()
-                    {
-                        LastName = "Сидоров",
-                        FirstName = "Семен",
-                        MiddleName = "Семенович"
-                    },
-                    Specialty = "Терапевт"
-                },
-            };
+                var url = $"{_config.AppointnmentHost}/api/Home/GetAppointments";
+                var client = new HttpClient();
+                var json = JsonConvert.SerializeObject(appointmentRequest);
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+                var content = new StringContent(json, null, "application/json");
+                request.Content = content;
+                var response = await client.SendAsync(request);
+                if (response == null)
+                    throw new ArgumentNullException("Не пришел ответ");
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                var appointments = JsonConvert.DeserializeObject<List<ShortAppointnmentDTO>>(data);
+                return appointments;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка при получении доступных записей: {message}", e);
+            }
+            return null;
+        }
+
+        public async Task<List<DoctorDTO>> GetDoctorsByIds(Guid[] ids)
+        {
+            try
+            {
+                var url = $"{_config.DoctorHost}/api/GetDoctorsByIds";
+                var json = JsonConvert.SerializeObject(ids);
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
+                var content = new StringContent(json, null, "application/json");
+                request.Content = content;
+                var client = new HttpClient();
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadAsStringAsync();
+                var doctors = JsonConvert.DeserializeObject<List<DoctorDTO>>(data);
+                if (doctors?.Any() ?? false)
+                    return doctors;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
+            }
+            // тестовые данные (потом удалить)
+            return Constants.BaseDoctors;
         }
     }
 }

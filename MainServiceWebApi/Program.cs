@@ -96,7 +96,9 @@ namespace MainServiceWebApi
             builder.Services.AddTransient<IMainService, MainService>();
             builder.Services.AddTransient<IAccountService, AccountService>();
             builder.Services.AddTransient<ITokenService, TokenService>();
-            
+            builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+            builder.Services.AddTransient<IAppointmentService, AppointmentService>();
+
             var app = builder.Build();
 
             
@@ -104,8 +106,7 @@ namespace MainServiceWebApi
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/Error/Index");
                 app.UseHsts();
             }
 

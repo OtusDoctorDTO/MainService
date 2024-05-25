@@ -1,4 +1,5 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
+﻿using HelpersDTO.AppointmentDto.DTO;
+using HelpersDTO.Doctor.DTO.Models;
 using MainServiceWebApi.Models;
 
 namespace MainServiceWebApi.Helpers

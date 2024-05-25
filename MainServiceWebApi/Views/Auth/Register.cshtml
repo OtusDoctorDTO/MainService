@@ -1,4 +1,4 @@
-﻿@model LoginViewModel
+﻿@model RegisterViewModel
 
 <div class="container">
     <div class="row">
@@ -21,34 +21,37 @@
                                     <div class="col-12">
                                         <div class="form-group position-relative">
                                             <span class="zmdi zmdi-email"></span>
+                                            <input type="text" id="phone" class="form-control" placeholder="Телефон" name="Phone" value="@Model.Phone" asp-for="Phone" min="9" maxlength="10">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group position-relative">
+                                            <span class="zmdi zmdi-email"></span>
                                             <input type="password" id="password" class="form-control" placeholder="Пароль" name="Password" value="@Model.Password" asp-for="Password">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group position-relative">
+                                            <span class="zmdi zmdi-email"></span>
+                                            <input type="password" id="confirmPassword" class="form-control" placeholder="Повтор пароля" name="ConfirmPassword" value="@Model.ConfirmPassword" asp-for="ConfirmPassword">
                                         </div>
                                     </div>
                                     <div class="col-12 text-lg-right">
                                         <a href="#" class="c-black">Забыли пароль ?</a>
                                     </div>
+                                    <div class="form-check">
+                                        <input checked class="form-check-input" type="checkbox" name="RememberMe" value="true" asp-for="RememberMe">
+                                        <label class="form-check-label" for="flexCheckChecked">
+                                            Запомнить меня?
+                                        </label>
+                                    </div>
                                     <div class="col-12 mt-30">
-                                        <button type="submit" class="btn btn-lg btn-custom btn-dark btn-block" asp-controller="Auth" asp-action="CheckIn">
+                                        <button type="submit" class="btn btn-lg btn-custom btn-dark btn-block" asp-controller="Auth" asp-action="Register">
                                             Войти
                                         </button>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="content text-center">
-                            <div class="border-bottom pb-5 mb-5">
-                                <h3 class="c-black">Первый раз тут?</h3>
-                                <a href="Register" class="btn btn-custom">Зарегистрироваться</a>
-                            </div>
-                            <h5 class="c-black mb-4 mt-n1">Или с помощью</h5>
-                            <div class="socials">
-                                <a href="#" class="zmdi zmdi-facebook"></a>
-                                <a href="#" class="zmdi zmdi-twitter"></a>
-                                <a href="#" class="zmdi zmdi-google"></a>
-                                <a href="#" class="zmdi zmdi-instagram"></a>
-                            </div>
                         </div>
                     </div>
                 </div>
