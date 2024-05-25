@@ -27,7 +27,7 @@ namespace MainServiceWebApi.Controllers
         {
             try
             {
-                // получение свободных записей с сегодняшнего дня на неделю вперед
+                // РїРѕР»СѓС‡РµРЅРёРµ СЃРІРѕР±РѕРґРЅС‹С… Р·Р°РїРёСЃРµР№ СЃ СЃРµРіРѕРґРЅСЏС€РЅРµРіРѕ РґРЅСЏ РЅР° РЅРµРґРµР»СЋ РІРїРµСЂРµРґ
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,
@@ -58,7 +58,7 @@ namespace MainServiceWebApi.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError("Произошла ошибка на главной странице {mainMessage}", e.Message);
+                _logger.LogError("РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РЅР° РіР»Р°РІРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ {mainMessage}", e.Message);
             }
             return RedirectToAction("Index", "Error");
         }
