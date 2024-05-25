@@ -18,24 +18,6 @@ namespace MainServiceWebApi.Controllers
             _appointmentService = appointmentService;
         }
 
-        public IActionResult Index(DoctorViewModel doctor)
-        {
-            try
-            {
-                if (User.Identity.IsAuthenticated)
-                {
-
-                }
-                return RedirectToAction("Index", "Auth", new { returnUrl = "Appointment/Index" });
-            }
-            catch (Exception e)
-            {
-
-                _logger.LogError("При попытке записи произошла ошибка {message}", e.Message);
-            }
-            return View();
-        }
-
         public async Task<IActionResult> MakeAppointment(Guid id)
         {
             try

@@ -1,5 +1,4 @@
-﻿using HelpersDTO.Authentication;
-using HelpersDTO.Authentication.DTO.Models;
+﻿using HelpersDTO.Authentication.DTO.Models;
 using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
@@ -109,9 +108,7 @@ namespace MainServiceWebApi.Controllers
                         if (result)
                             HttpContext.Response.Cookies.Append(_config.CookiesName, registerResponce!.Token!);
                         else
-                        {
                             ModelState.AddModelError("", "Не удалось залогиниться. Попробуйте войти самостоятельно");
-                        }
                     }
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
                         Redirect(model.ReturnUrl);

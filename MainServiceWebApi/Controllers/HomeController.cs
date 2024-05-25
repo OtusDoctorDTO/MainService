@@ -27,12 +27,12 @@ namespace MainServiceWebApi.Controllers
         {
             try
             {
+                // получение свободных записей с сегодняшнего дня на неделю вперед
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,
-                    ForDate = _dateTimeProvider.GetNow().AddDays(5),
-                    // удалить тестовые данные .AddDays(-60)
-                    SinceDate = _dateTimeProvider.GetNow().AddDays(-60),
+                    SinceDate = _dateTimeProvider.GetNow(),
+                    ForDate = _dateTimeProvider.GetNow().AddDays(7),
                     Statuses = [(int)StatusEnum.Free]
                 };
                 var appointments = await _service.GetActiveAppointnmentsAsync(request);
