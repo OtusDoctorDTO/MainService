@@ -21,7 +21,7 @@ namespace Services.Implementations
             _logger = logger;
         }
 
-        public async Task<List<DoctorDTO>> GetDoctors()
+        public async Task<List<DoctorDTO>?> GetDoctors()
         {
             try
             {
@@ -40,8 +40,7 @@ namespace Services.Implementations
             {
                 _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
             }
-            // тестовые данные (потом удалить)
-            return Constants.BaseDoctors;
+            return null;
         }
 
         public async Task<List<ShortAppointnmentDTO>?> GetActiveAppointnmentsAsync(ShortAppointmentRequest appointmentRequest)
@@ -69,7 +68,7 @@ namespace Services.Implementations
             return null;
         }
 
-        public async Task<List<DoctorDTO>> GetDoctorsByIds(Guid[] ids)
+        public async Task<List<DoctorDTO>?> GetDoctorsByIds(Guid[] ids)
         {
             try
             {
@@ -90,8 +89,7 @@ namespace Services.Implementations
             {
                 _logger.LogError("Произошла ошибка при получении данных из Doctor: {e}", e);
             }
-            // тестовые данные (потом удалить)
-            return Constants.BaseDoctors;
+            return null;
         }
     }
 }

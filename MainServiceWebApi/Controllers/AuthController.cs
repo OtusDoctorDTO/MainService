@@ -86,8 +86,8 @@ namespace MainServiceWebApi.Controllers
                     // захешировать пароль
                     var registerResponce = await _accountService.RegisterAsync(new RegisterDTO()
                     {
-                        Email = model.Email,
-                        Password = model.Password,
+                        Email = model.Email ?? "",
+                        Password = model.Password ?? "",
                         Phone = model.Phone,
                         RememberMe = model.RememberMe,
                         Role = new RoleDTO()

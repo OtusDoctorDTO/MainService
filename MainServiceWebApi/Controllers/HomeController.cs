@@ -40,26 +40,30 @@ namespace MainServiceWebApi.Controllers
                 {
                     var doctorsIds = appointments!.Select(app => app.DoctorId).Distinct().ToArray();
                     var doctors = await _service.GetDoctorsByIds(doctorsIds);
-                    var dataVM = doctors.Select(doctor => new MainPageViewModel()
+                    if (doctors?.Any() ?? false)
                     {
-                        DoctorId = doctor.Id,
-                        FullName = $"{doctor.User.LastName} {doctor.User.FirstName} {doctor.User.MiddleName}".Trim(),
-                        Appointments = appointments
-                        .Where(app => app.DoctorId == doctor.Id)
-                        .GroupBy(app => app.Date)
-                        .Select(x => new ShortAppointmentViewModel()
+                        var dataVM = doctors?.Select(doctor => new MainPageViewModel()
                         {
-                            Date = x.Key,
-                            Data = x.OrderBy(x => x.Time).ToDictionary(x => x.Id, y => y.Time)
-                        }).ToList()
-                    }).ToList();
-                    return View(dataVM);
+                            DoctorId = doctor.Id,
+                            FullName = $"{doctor.User.LastName} {doctor.User.FirstName} {doctor.User.MiddleName}".Trim(),
+                            Appointments = appointments
+                            .Where(app => app.DoctorId == doctor.Id)
+                            .GroupBy(app => app.Date)
+                            .Select(x => new ShortAppointmentViewModel()
+                            {
+                                Date = x.Key,
+                                Data = x.OrderBy(x => x.Time).ToDictionary(x => x.Id, y => y.Time)
+                            }).ToList()
+                        }).ToList();
+                        return View(dataVM);
+                    }
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError("Произошла ошибка на главной странице {mainMessage}", e.Message);
             }
+            _logger.LogWarning("Список врачей пуст");
             return RedirectToAction("Index", "Error");
         }
     }

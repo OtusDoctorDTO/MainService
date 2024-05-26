@@ -26,6 +26,7 @@
                                 <div>
                                     @doctor.FullName
                                 </div>
+                                <button class="btn btn-primary" type="submit" asp-area="" asp-controller="Doctor" asp-action="Info" name="id" value="@doctor.DoctorId">Подробнее</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary">Подробнее</button>
                                 <div class="d-flex justify-content-between align-items-center">
                                     @foreach (var appointment in doctor.Appointments)
