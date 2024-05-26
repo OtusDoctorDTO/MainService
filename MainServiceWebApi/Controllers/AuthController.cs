@@ -57,7 +57,7 @@ namespace MainServiceWebApi.Controllers
                         HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
                         if (!string.IsNullOrEmpty(login.ReturnUrl))
                             Redirect(login.ReturnUrl);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Profile");
                     }
                 }
             }
@@ -113,7 +113,7 @@ namespace MainServiceWebApi.Controllers
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
                         Redirect(model.ReturnUrl);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Profile");
                 }
             }
             catch (Exception e)
