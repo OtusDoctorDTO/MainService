@@ -1,3 +1,61 @@
 ﻿@model FullDoctorInfoViewModel
 
-@Model.Id
+<div class="container">
+    <div class="row">
+        @Model.LastName @Model.FirstName @Model.MiddleName
+    </div>
+    <div class="row">
+        Специальность: @Model.Specialty
+    </div>
+    <div class="row">
+        Кабинет: @Model.Cabinet
+    </div>
+    <div class="row">
+        Стаж @Model.Experience лет
+    </div>
+    @if (Model.WeekScheduleInfos?.Any() ?? false)
+    {
+        <div class="row">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Понедельник</th>
+                        <th scope="col">Вторник</th>
+                        <th scope="col">Среда</th>
+                        <th scope="col">Четверг</th>
+                        <th scope="col">Пятница</th>
+                        <th scope="col">Суббота</th>
+                        <th scope="col">Воскресенье</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.WeekScheduleInfos)
+                    {
+                        <tr>
+                            @foreach (var day in item.DayOfWeekInfos)
+                            {
+                                <td>
+                                    <div>@day.Date.ToString("dd.MM")</div>
+                                    @if (day.SinceTime == null && day.ForTime == null)
+                                    {
+                                        <span>Нет приема</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@day.SinceTime - @day.ForTime</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            }
+            else
+            {
+            <div class="text-danger">
+                Рассписание временно недоступно
+            </div>
+        </div>
+    }
+</div>

@@ -24,7 +24,7 @@ namespace MainServiceWebApi.Controllers
                 var doctor = await _doctorService.GetById(id);
                 if (doctor != null)
                 {
-                    var doctorVM = doctor.ToFullDoctorInfoVM(_dateTimeProvider.GetNow());
+                    var doctorVM = doctor.ToFullDoctorInfoVM(_dateTimeProvider.GetNow().AddDays(-7));
                     return View(doctorVM);
                 }
             }
