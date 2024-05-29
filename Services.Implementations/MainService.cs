@@ -72,7 +72,7 @@ namespace Services.Implementations
         {
             try
             {
-                var url = $"{_config.DoctorHost}/api/GetDoctorsByIds";
+                var url = $"{_config.DoctorHost}/api/Doctor/GetDoctorsByIds";
                 var json = JsonConvert.SerializeObject(ids);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
                 var content = new StringContent(json, null, "application/json");

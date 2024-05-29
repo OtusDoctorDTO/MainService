@@ -31,7 +31,7 @@ namespace MainServiceWebApi.Controllers
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,
-                    SinceDate = _dateTimeProvider.GetNow(),
+                    SinceDate = _dateTimeProvider.GetNow().AddDays(-30),
                     ForDate = _dateTimeProvider.GetNow().AddDays(7),
                     Statuses = [(int)StatusEnum.Free]
                 };
