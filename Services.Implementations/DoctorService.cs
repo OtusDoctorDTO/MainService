@@ -19,13 +19,13 @@ namespace Services.Implementations
         {
             try
             {
-                var url = $"{_config.DoctorHost}/api/Doctor/{id}";
+                var url = $"{_config.DoctorHost}/api/Doctor/GetFullInfoById?id={id}";
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
                 var client = new HttpClient();
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<FullInfoDoctorDTO?>(data);
+                return JsonConvert.DeserializeObject<FullInfoDoctorDTO>(data);
             }
             catch (Exception e)
             {
