@@ -1,7 +1,5 @@
 ﻿using HelpersDTO.Doctor.DTO.Models;
 using MainServiceWebApi.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System;
 using System.Globalization;
 
 namespace MainServiceWebApi.Helpers
@@ -26,7 +24,6 @@ namespace MainServiceWebApi.Helpers
         public static FullDoctorInfoViewModel? ToFullDoctorInfoVM(this FullInfoDoctorDTO doctor, DateTime now)
         {
             if (doctor == null) return null;
-
             // получение рассписания
             var fourWeeksByCurrentDay = new List<WeekScheduleInfo>();
             for (int i = 0; i < countOfWeeks; i++)
@@ -56,8 +53,6 @@ namespace MainServiceWebApi.Helpers
                 WeekScheduleInfos = fourWeeksByCurrentDay
             };
         }
-
-
 
         /// <summary>
         /// Получить стаж

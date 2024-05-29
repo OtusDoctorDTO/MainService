@@ -3,7 +3,6 @@ using HelpersDTO.Authentication;
 using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
-using System.Globalization;
 
 namespace MainServiceWebApi.Controllers
 {
@@ -32,7 +31,7 @@ namespace MainServiceWebApi.Controllers
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,
-                    SinceDate = _dateTimeProvider.GetNow().AddDays(-30),
+                    SinceDate = _dateTimeProvider.GetNow(),
                     ForDate = _dateTimeProvider.GetNow().AddDays(7),
                     Statuses = [(int)StatusEnum.Free]
                 };
