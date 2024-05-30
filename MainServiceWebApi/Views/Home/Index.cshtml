@@ -26,7 +26,7 @@
                                 <div>
                                     @doctor.FullName
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Подробнее</button>
+                                <a class="btn btn-primary" href="Doctor/Info?id=@doctor.DoctorId">Подробнее</a>
                                 <div class="d-flex justify-content-between align-items-center">
                                     @foreach (var appointment in doctor.Appointments)
                                     {
