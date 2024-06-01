@@ -1,8 +1,4 @@
-﻿using HelpersDTO.AppointmentDto;
-using HelpersDTO.AppointmentDto.DTO;
-using HelpersDTO.AppointmentDto.Enums;
-using MainServiceWebApi.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using HelpersDTO.AppointmentDto.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
