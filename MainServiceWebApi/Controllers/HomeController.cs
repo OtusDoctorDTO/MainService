@@ -31,6 +31,7 @@ namespace MainServiceWebApi.Controllers
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,
+                    // AddYears(-1), надо удалить, когда можно админ сможет добавлять рассписание врачей и создавать записи
                     SinceDate = _dateTimeProvider.GetNow().AddYears(-1),
                     ForDate = _dateTimeProvider.GetNow().AddDays(7).AddYears(1),
                     Statuses = [(int)StatusEnum.Free]
