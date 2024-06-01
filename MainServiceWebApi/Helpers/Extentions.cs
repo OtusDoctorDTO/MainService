@@ -1,4 +1,5 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
+﻿using HelpersDTO.Authentication;
+using HelpersDTO.Doctor.DTO.Models;
 using MainServiceWebApi.Models;
 using System.Globalization;
 

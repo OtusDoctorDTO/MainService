@@ -1,0 +1,48 @@
+﻿@model List<AppointmentViewModel>
+
+<div class="container">
+
+    @if (Model?.Any() ?? false)
+    {
+        <div class="row">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id пациента</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Время приема</th>
+                        <th scope="col">Продолжительность</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col">Статус</th>
+                        < scope="col"/>
+                        < scope="col"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in Model)
+                    {
+                        <tr>
+                            <td>@appointment.PatientId</td>
+                            <td>@appointment.Date</td>
+                            <td>@appointment.StartDate</td>
+                            <td>@appointment.Time</td>
+                            <td>@appointment.Price</td>
+                            <td>@appointment.Status</td>
+                            <td>
+                                <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-Id="@appointment.Id" role="button">Подтвердить</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Delete" asp-route-Id="@appointment.Id" role="button">Удалить</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            else
+            {
+            <div class="text-danger">
+                Записей нет
+            </div>
+        </div>
+    }
+</div>
