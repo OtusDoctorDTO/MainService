@@ -1,5 +1,4 @@
 ﻿using HelpersDTO.AppointmentDto.DTO;
-using HelpersDTO.AppointmentDto.Enums;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Services.Abstractions;
