@@ -25,7 +25,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Appointments()
+        public async Task<IActionResult> NewAppointmentsAsync()
         {
             try
             {

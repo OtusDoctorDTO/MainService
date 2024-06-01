@@ -55,7 +55,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                 var status = isConfirm ? StatusEnum.Waiting : StatusEnum.Сanceled;
                 var result = await _appointmentService.UpdateStatusAsync(id, (int)status);
                 if (result)
-                    return RedirectToAction("Appointments", "CallCenter");
+                    return RedirectToAction("NewAppointments", "CallCenter");
             }
             catch (Exception e)
             {

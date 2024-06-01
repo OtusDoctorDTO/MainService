@@ -27,7 +27,7 @@ namespace MainServiceWebApi.Helpers
         public static FullDoctorInfoViewModel? ToFullDoctorInfoVM(this FullInfoDoctorDTO doctor, DateTime now)
         {
             if (doctor == null) return null;
-            // получение рассписания
+            // получение расписания
             var fourWeeksByCurrentDay = new List<WeekScheduleInfo>();
             for (int i = 0; i < countOfWeeks; i++)
             {
