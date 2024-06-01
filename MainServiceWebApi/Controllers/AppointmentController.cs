@@ -24,7 +24,7 @@ namespace MainServiceWebApi.Controllers
                     var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type.EndsWith("claims/nameidentifier"))?.Value;
                     if (string.IsNullOrEmpty(nameIdentifier) || !Guid.TryParse(nameIdentifier, out Guid userId))
                         throw new NullReferenceException($"Ошибка получения данных пользователя: {HttpContext.User.Identity}");
-                    var result = await _appointmentService.UpdateStatusAsync(id, userId, (int)StatusEnum.Success);
+                    var result = await _appointmentService.UpdateStatusAsync(id, (int)StatusEnum.Success, userId);
                     if (result)
                         return View("Sucsess");
                 }

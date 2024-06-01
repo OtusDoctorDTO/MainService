@@ -34,7 +34,7 @@
                                         <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Info" asp-route-Id="@appointment.Id" role="button">Подробнее</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Delete" asp-route-Id="@appointment.Id" role="button">Удалить</a>
+                                        <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@appointment.Id" asp-route-isConfirm="false" role="button">Удалить</a>
                                     </td>
                                 </tr>
                             }

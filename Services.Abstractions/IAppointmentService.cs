@@ -5,6 +5,6 @@ namespace Services.Abstractions
     public interface IAppointmentService
     {
         Task<AppointmentDto?> GetById(Guid id);
-        Task<bool> UpdateStatusAsync(Guid id, Guid userId, int success);
+        Task<bool> UpdateStatusAsync(Guid id, int status, Guid? userId = null);
     }
 }

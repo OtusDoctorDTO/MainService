@@ -17,7 +17,15 @@ namespace Services.Implementations
             _logger = logger;
         }
 
-        public async Task<bool> UpdateStatusAsync(Guid id, Guid userId, int success)
+        /// <summary>
+        /// Обновить статус записи
+        /// </summary>
+        /// <param name="id">id записи</param>
+        /// <param name="status">новый статус</param>
+        /// <param name="userId">id пациента (опционально)</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<bool> UpdateStatusAsync(Guid id, int status, Guid? userId = null)
         {
             try
             {
@@ -26,9 +34,10 @@ namespace Services.Implementations
                 var app = new UpdateStatusAppointmentDto()
                 {
                     Id = id,
-                    Status = (int)StatusEnum.BookedByUser,
-                    PatientId = userId
+                    Status = status
                 };
+                if (userId != null)
+                    app.PatientId = userId!.Value;
                 var json = JsonConvert.SerializeObject(app);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
                 var content = new StringContent(json, null, "application/json");

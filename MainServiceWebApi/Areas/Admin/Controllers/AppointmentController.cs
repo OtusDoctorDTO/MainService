@@ -4,6 +4,7 @@ using MainServiceWebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using MainServiceWebApi.Areas.Admin.Helpers;
+using HelpersDTO.AppointmentDto.Enums;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
@@ -47,18 +48,20 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> MakeAppointmentAsync(AppointmentFullInfoViewModel appointment)
+        public async Task<IActionResult> ConfirmAsync(Guid id, bool isConfirm)
         {
             try
             {
-
+                var status = isConfirm ? StatusEnum.Waiting : StatusEnum.Сanceled;
+                var result = await _appointmentService.UpdateStatusAsync(id, (int)status);
+                if (result)
+                    return RedirectToAction("Appointments", "CallCenter");
             }
             catch (Exception e)
             {
                 _logger.LogError("Произошла ошибка {message}", e.Message);
             }
-            return View(appointment);
+            return View();
         }
     }
 }
