@@ -1,10 +1,10 @@
-﻿using HelpersDTO.Authentication;
-using HelpersDTO.Authentication.DTO.Models;
+﻿using HelpersDTO.AppointmentDto.DTO;
 
 namespace Services.Abstractions
 {
     public interface IAppointmentService
     {
+        Task<AppointmentDto?> GetById(Guid id);
         Task<bool> UpdateStatusAsync(Guid id, Guid userId, int success);
     }
 }

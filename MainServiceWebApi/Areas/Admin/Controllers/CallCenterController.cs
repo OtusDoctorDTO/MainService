@@ -36,6 +36,11 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                     ForDate = _dateTimeProvider.GetNow().AddDays(7),
                     Statuses = [(int)StatusEnum.BookedByUser]
                 };
+
+                // удалить после теста
+                request.SinceDate = _dateTimeProvider.GetNow().AddYears(-1);
+                request.ForDate = _dateTimeProvider.GetNow().AddDays(7).AddYears(1);
+
                 var appointments = await _service.GetActiveAppointnmentsAsync(request);
                 return View(appointments?.Select(app => app.ToAppointmentViewModel()).ToList());
             }
@@ -43,7 +48,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             {
                 _logger.LogError("Произошла ошибка при получении списка записей для подтверждения {Message}", e.Message);
             }
-            return RedirectToAction("Index", "Error");
+            return View();
         }
     }
 }
