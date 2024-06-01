@@ -27,13 +27,13 @@ namespace MainServiceWebApi
                 throw new ConfigurationException("Не удалось прочитать строку подключения");
             builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddAuthentication(x=>
+            builder.Services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(x=>
+                .AddJwtBearer(x =>
                 {
                     x.TokenValidationParameters = new TokenValidationParameters()
                     {
@@ -102,7 +102,7 @@ namespace MainServiceWebApi
 
             var app = builder.Build();
 
-            
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -123,6 +123,7 @@ namespace MainServiceWebApi
             app.UseAuthentication();
             app.UseAuthorization();
 
+            #pragma warning disable ASP0014 // Suggest using top level route registrations
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAreaControllerRoute(
