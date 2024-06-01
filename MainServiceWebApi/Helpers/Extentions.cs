@@ -1,4 +1,7 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
+﻿using HelpersDTO.AppointmentDto.DTO;
+using HelpersDTO.Authentication;
+using HelpersDTO.Doctor.DTO.Models;
+using MainServiceWebApi.Areas.Admin.Models;
 using MainServiceWebApi.Models;
 using System.Globalization;
 
@@ -24,7 +27,7 @@ namespace MainServiceWebApi.Helpers
         public static FullDoctorInfoViewModel? ToFullDoctorInfoVM(this FullInfoDoctorDTO doctor, DateTime now)
         {
             if (doctor == null) return null;
-            // получение рассписания
+            // получение расписания
             var fourWeeksByCurrentDay = new List<WeekScheduleInfo>();
             for (int i = 0; i < countOfWeeks; i++)
             {

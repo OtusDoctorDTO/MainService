@@ -1,0 +1,41 @@
+﻿@model AppointmentFullInfoViewModel?
+
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            @await Html.PartialAsync("AdminMenu")
+        </div>
+        <div class="col-10">
+            @if (Model != null)
+            {
+                <div class="row">
+                    ФИО пациента:
+                </div>
+                <div class="row">
+                    Дата записи: @Model.Date
+                </div>
+                <div class="row">
+                    Время записи: @Model.Time
+                </div>
+                <div class="row">
+                    Цена: @Model.Price
+                </div>
+                <div class="row">
+                    Доктор: @Model.Doctor?.LastName @Model.Doctor?.FirstName @Model.Doctor?.MiddleName
+                </div>
+                <div class="row">
+                    <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@Model.Id" asp-route-isConfirm="true" role="button">Подтвердить</a>
+                </div>
+                <div class="row">
+                    <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@Model.Id" asp-route-isConfirm="false" role="button">Удалить</a>
+                </div>
+            }
+            else
+            {
+                <div class="text-danger">
+                    Такой записи не существует
+                </div>
+            }
+        </div>
+    </div>
+</div>

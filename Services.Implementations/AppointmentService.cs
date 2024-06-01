@@ -1,6 +1,4 @@
 ﻿using HelpersDTO.AppointmentDto.DTO;
-using HelpersDTO.AppointmentDto.Enums;
-using HelpersDTO.Authentication;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Services.Abstractions;
@@ -18,7 +16,15 @@ namespace Services.Implementations
             _logger = logger;
         }
 
-        public async Task<bool> UpdateStatusAsync(Guid id, Guid userId, int success)
+        /// <summary>
+        /// Обновить статус записи
+        /// </summary>
+        /// <param name="id">id записи</param>
+        /// <param name="status">новый статус</param>
+        /// <param name="userId">id пациента (опционально)</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<bool> UpdateStatusAsync(Guid id, int status, Guid? userId = null)
         {
             try
             {
@@ -27,9 +33,10 @@ namespace Services.Implementations
                 var app = new UpdateStatusAppointmentDto()
                 {
                     Id = id,
-                    Status = (int)StatusEnum.Success,
-                    PatientId = userId
+                    Status = status
                 };
+                if (userId != null)
+                    app.PatientId = userId!.Value;
                 var json = JsonConvert.SerializeObject(app);
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
                 var content = new StringContent(json, null, "application/json");
@@ -44,6 +51,25 @@ namespace Services.Implementations
                 _logger.LogError("Произошла ошибка при авторизации: {e}", e);
             }
             return false;
+        }
+
+        public async Task<AppointmentDto?> GetById(Guid id)
+        {
+            try
+            {
+                var url = $"{_config.AppointnmentHost}/api/Home/GetAppointmentById?id={id}";
+                var client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var response = await client.SendAsync(request);
+                if (response == null)
+                    throw new ArgumentNullException("Не пришел ответ");
+                return await response.Content.ReadFromJsonAsync<AppointmentDto?>();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Произошла ошибка при авторизации: {e}", e);
+            }
+            return null;
         }
     }
 }

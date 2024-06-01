@@ -27,13 +27,13 @@ namespace MainServiceWebApi
                 throw new ConfigurationException("Не удалось прочитать строку подключения");
             builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddAuthentication(x=>
+            builder.Services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(x=>
+                .AddJwtBearer(x =>
                 {
                     x.TokenValidationParameters = new TokenValidationParameters()
                     {
@@ -60,7 +60,6 @@ namespace MainServiceWebApi
                     options.AccessDeniedPath = "/Auth/";
                 });
             builder.Services.AddAuthorization();
-
             builder.Services.AddControllersWithViews();
 
             // Add services to the container.
@@ -103,27 +102,38 @@ namespace MainServiceWebApi
 
             var app = builder.Build();
 
-            
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Error/Index");
                 app.UseHsts();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Index");
+                app.UseHsts();
+            }
+
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}");
-            app.MapAreaControllerRoute(
-                name: "admin",
-                areaName: "admin",
-                pattern: "{area:exists}/{controller=CallCenter}/{action=Index}");
 
+            #pragma warning disable ASP0014 // Suggest using top level route registrations
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapAreaControllerRoute(
+                    name: "Admin",
+                    areaName: "Admin",
+                    pattern: "Admin/{controller}/{action}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}");
+            });
             app.Run();
         }
     }
