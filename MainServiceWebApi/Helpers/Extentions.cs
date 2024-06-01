@@ -1,5 +1,7 @@
-﻿using HelpersDTO.Authentication;
+﻿using HelpersDTO.AppointmentDto.DTO;
+using HelpersDTO.Authentication;
 using HelpersDTO.Doctor.DTO.Models;
+using MainServiceWebApi.Areas.Admin.Models;
 using MainServiceWebApi.Models;
 using System.Globalization;
 

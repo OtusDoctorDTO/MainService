@@ -55,7 +55,7 @@ namespace Services.Implementations
                 var response = await client.SendAsync(request);
                 if (response == null)
                     throw new ArgumentNullException("Не пришел ответ");
-                var test = response.Content.ReadFromJsonAsync<bool>();
+                return await response.Content.ReadFromJsonAsync<AppointmentDto?>();
             }
             catch (Exception e)
             {

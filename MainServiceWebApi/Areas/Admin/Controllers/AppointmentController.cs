@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HelpersDTO.Doctor.DTO.Models;
+using MainServiceWebApi.Areas.Admin.Models;
+using MainServiceWebApi.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
+using MainServiceWebApi.Areas.Admin.Helpers;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
@@ -8,10 +12,14 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
     {
         private readonly ILogger<AppointmentController> _logger;
         private readonly IAppointmentService _appointmentService;
-        public AppointmentController(ILogger<AppointmentController> logger, IAppointmentService appointmentService)
+        private readonly IDoctorService _doctorService;
+        private readonly IDateTimeProvider _dateTimeProvider;
+        public AppointmentController(ILogger<AppointmentController> logger, IAppointmentService appointmentService, IDoctorService doctorService, IDateTimeProvider dateTimeProvider)
         {
             _logger = logger;
             _appointmentService = appointmentService;
+            _doctorService = doctorService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IActionResult> InfoAsync(Guid id)
@@ -19,17 +27,28 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             try
             {
                 var appointment = await _appointmentService.GetById(id);
-                //var patient = ;
-                //var doctor = ;
+                AppointmentFullInfoViewModel? result = null;
+                FullInfoDoctorDTO? doctor = null;
+                if (appointment != null)
+                {
+                    doctor = await _doctorService.GetById(appointment!.DoctorId);
+                    var doctorVM = doctor?.ToFullDoctorInfoVM(_dateTimeProvider.GetNow());
+                    //var patient = ;
+                    result = appointment.ToAppointmentFullInfoVM();
+                    if(doctorVM != null && result != null)
+                        result!.Doctor = doctorVM!;
+                    return View(result);
+                }
             }
             catch (Exception e)
             {
                 _logger.LogError("Произошла ошибка {message}", e.Message);
             }
-            return RedirectToAction("Index", "Error");
+            return View();
         }
 
-        public async Task<IActionResult> MakeAppointmentAsync(Guid id)
+        [HttpPost]
+        public async Task<IActionResult> MakeAppointmentAsync(AppointmentFullInfoViewModel appointment)
         {
             try
             {
@@ -39,7 +58,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             {
                 _logger.LogError("Произошла ошибка {message}", e.Message);
             }
-            return RedirectToAction("Index", "Error");
+            return View(appointment);
         }
     }
 }

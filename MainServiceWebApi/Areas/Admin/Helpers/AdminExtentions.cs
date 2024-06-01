@@ -19,5 +19,18 @@ namespace MainServiceWebApi.Areas.Admin.Helpers
                 //PatientId = 
             };
         }
+
+
+        public static AppointmentFullInfoViewModel? ToAppointmentFullInfoVM(this AppointmentDto? appointment)
+        {
+            if(appointment == null) return null;
+            return new AppointmentFullInfoViewModel()
+            {
+                Id = appointment.Id,
+                Price = appointment.Price,
+                StartDate = appointment.Time,
+                Status = appointment.Status ?? ""
+            };
+        }
     }
 }
