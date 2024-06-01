@@ -60,7 +60,6 @@ namespace MainServiceWebApi
                     options.AccessDeniedPath = "/Auth/";
                 });
             builder.Services.AddAuthorization();
-
             builder.Services.AddControllersWithViews();
 
             // Add services to the container.
@@ -108,22 +107,32 @@ namespace MainServiceWebApi
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Error/Index");
                 app.UseHsts();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Index");
+                app.UseHsts();
+            }
+
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}");
-            app.MapAreaControllerRoute(
-                name: "admin",
-                areaName: "admin",
-                pattern: "{area:exists}/{controller=CallCenter}/{action=Index}");
 
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapAreaControllerRoute(
+                    name: "Admin",
+                    areaName: "Admin",
+                    pattern: "Admin/{controller}/{action}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}");
+            });
             app.Run();
         }
     }
