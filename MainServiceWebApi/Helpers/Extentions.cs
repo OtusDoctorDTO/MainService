@@ -1,6 +1,7 @@
 ﻿using HelpersDTO.AppointmentDto.DTO;
 using HelpersDTO.Authentication;
 using HelpersDTO.Doctor.DTO.Models;
+using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Areas.Admin.Models;
 using MainServiceWebApi.Models;
 using System.Globalization;
@@ -80,6 +81,18 @@ namespace MainServiceWebApi.Helpers
             var weekOffset = culture.DateTimeFormat.FirstDayOfWeek - dateValue.DayOfWeek;
             var startOfWeek = dateValue.AddDays(weekOffset);
             return Enumerable.Range(0, 7).Select(i => startOfWeek.AddDays(i)).ToList();
+        }
+
+        public static PatientViewModel? ToPatientVM(this PatientDTO? patient)
+        {
+            if (patient == null) return null;
+            return new PatientViewModel()
+            {
+                FirstName = patient.FirstName,
+                LastName = patient.LastName,
+                Email = patient.Email,
+                PhoneNumber = patient.Phone ?? ""
+            };
         }
     }
 }

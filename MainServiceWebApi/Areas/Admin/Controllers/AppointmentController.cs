@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using MainServiceWebApi.Areas.Admin.Helpers;
 using HelpersDTO.AppointmentDto.Enums;
+using System.Threading.Tasks;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
@@ -15,12 +16,14 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
         private readonly IAppointmentService _appointmentService;
         private readonly IDoctorService _doctorService;
         private readonly IDateTimeProvider _dateTimeProvider;
-        public AppointmentController(ILogger<AppointmentController> logger, IAppointmentService appointmentService, IDoctorService doctorService, IDateTimeProvider dateTimeProvider)
+        private readonly IPatientService _patientService;
+        public AppointmentController(ILogger<AppointmentController> logger, IAppointmentService appointmentService, IDoctorService doctorService, IDateTimeProvider dateTimeProvider, IPatientService patientService)
         {
             _logger = logger;
             _appointmentService = appointmentService;
             _doctorService = doctorService;
             _dateTimeProvider = dateTimeProvider;
+            _patientService = patientService;
         }
 
         public async Task<IActionResult> InfoAsync(Guid id)
@@ -32,12 +35,16 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                 FullInfoDoctorDTO? doctor = null;
                 if (appointment != null)
                 {
-                    doctor = await _doctorService.GetById(appointment!.DoctorId);
-                    var doctorVM = doctor?.ToFullDoctorInfoVM(_dateTimeProvider.GetNow());
-                    //var patient = ;
                     result = appointment.ToAppointmentFullInfoVM();
+                    var doctorTask = _doctorService.GetById(appointment!.DoctorId);
+                    var patientTask = _patientService.GetPatientProfileAsync(appointment.PatientId!.Value);
+                    doctor = await doctorTask;
+                    var patient = await patientTask;
+                    var doctorVM = doctor?.ToFullDoctorInfoVM(_dateTimeProvider.GetNow());  
                     if(doctorVM != null && result != null)
                         result!.Doctor = doctorVM!;
+                    if (patient != null)
+                        result!.Patient = patient.ToPatientVM();
                     return View(result);
                 }
             }
