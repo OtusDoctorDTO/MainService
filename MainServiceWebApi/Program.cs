@@ -60,6 +60,10 @@ namespace MainServiceWebApi
                     options.AccessDeniedPath = "/Auth/";
                 });
             builder.Services.AddAuthorization();
+            builder.Services.AddHttpClient<IPatientService, PatientService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7056");
+            });
             builder.Services.AddControllersWithViews();
 
             // Add services to the container.
