@@ -1,0 +1,53 @@
+﻿@model List<AppointmentViewModel>
+
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            @await Html.PartialAsync("AdminMenu")
+        </div>
+        <div class="col-10">
+            @if (Model?.Any() ?? false)
+            {
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Пациент</th>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Продолжительность</th>
+                                <th scope="col">Цена</th>
+                                <th scope="col">Статус</th>
+                                <th scope="col" />
+                                <th scope="col" />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var appointment in Model)
+                            {
+                                <tr>
+                                    <td>@appointment.PatientId</td>
+                                    <td>@appointment.Date</td>
+                                    <td>@appointment.Time</td>
+                                    <td>@appointment.Price</td>
+                                    <td>@appointment.Status</td>
+                                    <td>
+                                        <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Info" asp-route-Id="@appointment.Id" role="button">Подробнее</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@appointment.Id" asp-route-isConfirm="false" role="button">Удалить</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-danger">
+                    Записей нет
+                </div>
+            }
+        </div>
+    </div>
+</div>
