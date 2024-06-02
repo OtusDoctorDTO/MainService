@@ -1,38 +1,42 @@
-﻿using HelpersDTO.Authentication.DTO.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using HelpersDTO.Patient.DTO;
+using HelpersDTO.Patient;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MainServiceWebApi.Models;
 using Services.Abstractions;
 
+
 namespace MainServiceWebApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
     public class PatientController : Controller
     {
-        private readonly IPatientService _patientService;
+        private readonly IPatientService _patientServiceClient;
 
-        public PatientController(IPatientService patientService)
+        public PatientController(IPatientService patientServiceClient)
         {
-            _patientService = patientService;
+            _patientServiceClient = patientServiceClient;
         }
 
         [HttpGet("Profile/{userId}")]
         public async Task<IActionResult> Profile(Guid userId)
         {
-            try
-            {
-                var patient = await _patientService.GetPatientProfileAsync(userId);
-                if (patient == null)
-                    return NotFound();
+            var patient = await _patientServiceClient.GetPatientProfileAsync(userId);
+            if (patient == null)
+                return NotFound();
 
-                return View(patient);
-            }
-            catch (Exception ex)
+            var model = new PatientViewModel
             {
-                // Логирование ошибки
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+                FirstName = patient.FirstName,
+                LastName = patient.LastName,
+                Email = patient.Email,
+                UsersId = userId
+            };
+
+            return View(model);
         }
     }
+
 }

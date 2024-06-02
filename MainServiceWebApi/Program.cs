@@ -27,6 +27,7 @@ namespace MainServiceWebApi
                 throw new ConfigurationException("Не удалось прочитать строку подключения");
             builder = WebApplication.CreateBuilder(args);
             builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddAuthentication(x=>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,7 +50,7 @@ namespace MainServiceWebApi
                         OnMessageReceived = context =>
                         {
                             context.Token = context.Request.Cookies[receptionConfig.CookiesName];
-                            return Task.CompletedTask;
+                            return Task<bool>.CompletedTask;
                         }
                     };
                 })
@@ -60,6 +61,11 @@ namespace MainServiceWebApi
                     options.AccessDeniedPath = "/Auth/";
                 });
             builder.Services.AddAuthorization();
+
+            builder.Services.AddHttpClient<IPatientService, PatientService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7056");
+            });
 
             builder.Services.AddControllersWithViews();
 

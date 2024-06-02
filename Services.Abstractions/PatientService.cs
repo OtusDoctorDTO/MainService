@@ -1,32 +1,63 @@
-﻿using Domain.Entities;
+﻿using HelpersDTO.Patient.DTO;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
+using HelpersDTO.Authentication;
 
 namespace Services.Abstractions
 {
-    public class PatientService
+    public class PatientService:IPatientService
     {
         private readonly HttpClient _httpClient;
+        private readonly IApplicationConfig _config;
 
-        public PatientService(HttpClient httpClient)
+        public PatientService(IApplicationConfig config, HttpClient httpClient)
         {
+            _config = config;
             _httpClient = httpClient;
         }
 
-        public async Task AddPatientAsync(PatientDTO patient)
+        public async Task<bool> AddPatientAsync(PatientDTO patient)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/patients", patient);
-            response.EnsureSuccessStatusCode();
+            var url = $"{_config.PatientHost}/api/Patients/Add";
+            var client = new HttpClient();
+            var json = JsonConvert.SerializeObject(patient);
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            var content = new StringContent(json, null, "application/json");
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response == null)
+                throw new ArgumentNullException("Не пришел ответ");
+            return response.IsSuccessStatusCode;
+
         }
-        public async Task<PatientDTO> GetPatientProfileAsync(Guid userId)
+
+        public async Task<PatientDTO?> GetPatientProfileAsync(Guid userId)
         {
-            // Логика для получения профиля пациента из репозитория по его идентификатору userId
-            // Пример:
-            var patient = new PatientDTO {
-                FirstName = "Иван",
-                LastName = "Иванов",
-                DateOfBirth = Convert.ToDateTime(21/12/1998),
-                PhoneNumber = "891234567"
-            };
+            var response = await _httpClient.GetAsync($"{_config.PatientHost}/Patients/{userId}");
+            if (response == null)
+                throw new ArgumentNullException("Не пришел ответ");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null; // или выбросьте исключение, если это необходимо
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(responseContent))
+            {
+                return null;
+            }
+
+            var patient = JsonConvert.DeserializeObject<PatientDTO>(responseContent);
+            if (patient == null)
+            {
+                return null;
+            }
+
             return patient;
         }
     }

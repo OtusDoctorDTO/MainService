@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HelpersDTO.Patient;
+using HelpersDTO.Patient.DTO;
 
 namespace Services.Abstractions
 {
     public interface IPatientService
     {
-        Task<PatientService> GetPatientProfileAsync(Guid userId);
+        Task<bool> AddPatientAsync(PatientDTO patient);
+        Task<PatientDTO> GetPatientProfileAsync(Guid userId);
     }
 }
