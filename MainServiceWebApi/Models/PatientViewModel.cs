@@ -7,6 +7,6 @@
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
-        public Guid? UsersId { get; set; }
+        public Guid? UserId { get; set; }
     }
 }

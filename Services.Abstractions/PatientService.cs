@@ -1,15 +1,9 @@
 ﻿using HelpersDTO.Patient.DTO;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Net.Http.Json;
-using Microsoft.Extensions.Logging;
-using HelpersDTO.Authentication;
 
 namespace Services.Abstractions
 {
-    public class PatientService:IPatientService
+    public class PatientService : IPatientService
     {
         private readonly HttpClient _httpClient;
         private readonly IApplicationConfig _config;
@@ -32,7 +26,6 @@ namespace Services.Abstractions
             if (response == null)
                 throw new ArgumentNullException("Не пришел ответ");
             return response.IsSuccessStatusCode;
-
         }
 
         public async Task<PatientDTO?> GetPatientProfileAsync(Guid userId)

@@ -9,6 +9,5 @@
         string PatientHost { get; set; }
         string CookiesName { get; set; }
         AuthOptions AuthOptions { get; set; }
-
     }
 }

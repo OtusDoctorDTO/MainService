@@ -6,6 +6,6 @@ namespace Services.Abstractions
     public interface IPatientService
     {
         Task<bool> AddPatientAsync(PatientDTO patient);
-        Task<PatientDTO> GetPatientProfileAsync(Guid userId);
+        Task<PatientDTO?> GetPatientProfileAsync(Guid userId);
     }
 }

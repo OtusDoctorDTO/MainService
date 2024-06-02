@@ -2,7 +2,6 @@
 using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 
 namespace MainServiceWebApi.Controllers
@@ -106,6 +105,18 @@ namespace MainServiceWebApi.Controllers
                         registerResponce?.Messages.ForEach(message => ModelState.AddModelError("", message));
                         return View(model);
                     }
+
+                    if (model.RememberMe)
+                    {
+                        var result = await _tokenService.Validate(registerResponce!.Token);
+                        if (result)
+                            HttpContext.Response.Cookies.Append(_config.CookiesName, registerResponce!.Token!);
+                        else
+                            ModelState.AddModelError("", "Не удалось залогиниться. Попробуйте войти самостоятельно");
+                    }
+                    if (!string.IsNullOrEmpty(model.ReturnUrl))
+                        Redirect(model.ReturnUrl);
+
 
                     // Добавление пациента в PatientService
                     var userId = registerResponce.UserId;
