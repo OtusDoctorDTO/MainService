@@ -1,4 +1,5 @@
 ﻿using HelpersDTO.Authentication.DTO.Models;
+using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
@@ -10,6 +11,7 @@ namespace MainServiceWebApi.Controllers
         private readonly IAccountService _accountService;
         private readonly IApplicationConfig _config;
         private readonly ITokenService _tokenService;
+        private readonly IPatientService _patientService; 
         ILogger<AuthController> _logger;
 
 
@@ -17,11 +19,13 @@ namespace MainServiceWebApi.Controllers
             IAccountService accountService,
             IApplicationConfig config,
             ITokenService tokenService,
+            IPatientService patientService, 
             ILogger<AuthController> logger)
         {
             _accountService = accountService;
             _config = config;
             _tokenService = tokenService;
+            _patientService = patientService;
             _logger = logger;
         }
         public IActionResult Index(string? returnUrl = null)
@@ -57,7 +61,7 @@ namespace MainServiceWebApi.Controllers
                         HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
                         if (!string.IsNullOrEmpty(login.ReturnUrl))
                             Redirect(login.ReturnUrl);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Profile");
                     }
                 }
             }
@@ -113,7 +117,15 @@ namespace MainServiceWebApi.Controllers
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
                         Redirect(model.ReturnUrl);
 
-                    return RedirectToAction("Index", "Home");
+
+                    // Добавление пациента в PatientService
+                    var userId = registerResponce.UserId;
+                    if (userId != null)
+                    {
+                        await _patientService.AddPatientAsync(new PatientDTO { UserId = userId });
+                    }
+
+                    return RedirectToAction("Profile", "Patient", new { userId });
                 }
             }
             catch (Exception e)

@@ -60,6 +60,11 @@ namespace MainServiceWebApi
                     options.AccessDeniedPath = "/Auth/";
                 });
             builder.Services.AddAuthorization();
+            builder.Services.AddHttpClient<IPatientService, PatientService>(client =>
+            {
+                string patientHost = receptionConfig.PatientHost;
+                client.BaseAddress = new Uri(patientHost);
+            });
             builder.Services.AddControllersWithViews();
 
             // Add services to the container.
@@ -102,8 +107,6 @@ namespace MainServiceWebApi
             builder.Services.AddTransient<IValidationService, ValidationService>();
 
             var app = builder.Build();
-
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
