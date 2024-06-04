@@ -1,4 +1,6 @@
-﻿namespace MainServiceWebApi.Areas.Admin.Models
+﻿using MainServiceWebApi.Models;
+
+namespace MainServiceWebApi.Areas.Admin.Models
 {
     public class AppointmentViewModel
     {
@@ -9,7 +11,7 @@
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
         public string Status { get; set; } = string.Empty;
-        //TODO добавить данные пациента
+        public PatientViewModel? Patient { get; set; }
         //TODO добавить данные доктора?!
     }
 }

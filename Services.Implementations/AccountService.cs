@@ -41,24 +41,17 @@ namespace Services.Implementations
 
         public async Task<RegistrationResponse?> RegisterAsync(RegisterDTO register)
         {
-            try
-            {
-                var url = $"{_config.AuthHost}/User/Register";
-                var client = new HttpClient();
-                var json = JsonConvert.SerializeObject(register);
-                var request = new HttpRequestMessage(HttpMethod.Post, url);
-                var content = new StringContent(json, null, "application/json");
-                request.Content = content;
-                var response = await client.SendAsync(request);
-                if(response == null)
-                    throw new ArgumentNullException("Не пришел ответ");
-                return await response!.Content.ReadFromJsonAsync<RegistrationResponse>();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Произошла ошибка при авторизации: {e}", e);
-            }
-            return null;
+            var url = $"{_config.AuthHost}/User/Register";
+            var client = new HttpClient();
+            var json = JsonConvert.SerializeObject(register);
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            var content = new StringContent(json, null, "application/json");
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response == null)
+                throw new ArgumentNullException("Не пришел ответ");
+            var result = await response!.Content.ReadFromJsonAsync<RegistrationResponse?>();
+            return result;
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿using HelpersDTO.Patient.DTO;
-using HelpersDTO.Patient;
-using Microsoft.AspNetCore.Mvc;
+﻿using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using MainServiceWebApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
 
@@ -14,10 +12,12 @@ namespace MainServiceWebApi.Controllers
     public class PatientController : Controller
     {
         private readonly IPatientService _patientService;
+        private readonly ILogger<PatientController> _logger;
 
-        public PatientController(IPatientService patientServiceClient)
+        public PatientController(IPatientService patientServiceClient, ILogger<PatientController> logger)
         {
             _patientService = patientServiceClient;
+            _logger = logger;
         }
 
         [HttpGet("Profile/{userId}")]
@@ -34,15 +34,16 @@ namespace MainServiceWebApi.Controllers
 
                     model = new PatientViewModel
                     {
-                        FirstName = patient.FirstName,
-                        LastName = patient.LastName,
-                        Email = patient.Email,
+                        FirstName = patient!.FirstName ?? "",
+                        LastName = patient!.LastName ?? "",
+                        Email = patient!.Email ?? "",
                         UserId = userId
                     };
                 }
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
+                _logger.LogError(e, "Произошла ошибка");
                 ModelState.AddModelError("", "Произошла неизвестная ошибка. Попробуйте еще раз");
             }
 

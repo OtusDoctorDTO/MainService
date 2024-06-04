@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="HelpersDTO" Version="1.0.28" />
     <PackageReference Include="MassTransit" Version="8.2.2" />
     <PackageReference Include="MassTransit.Abstractions" Version="8.2.2" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
@@ -22,10 +21,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Consumers\" />
   </ItemGroup>
 
   <ItemGroup>

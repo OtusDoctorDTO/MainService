@@ -6,7 +6,8 @@ namespace MainServiceWebApi.Areas.Admin.Models
     public class CheckPatientViewModel
     {
         //добавить данные заполненные из записи ко врачу
-        public Guid? Id { get; set; }
+        public Guid? UserId { get; }
+        public Guid? AppointmentId { get; }
         [Required]
         public string? LastName { get; set; }
         [Required]
@@ -24,5 +25,11 @@ namespace MainServiceWebApi.Areas.Admin.Models
         [Required]
         [Range(1, 2)]
         public int? Gender { get; set; }
+
+        public CheckPatientViewModel(Guid userId, Guid appoitmentid)
+        {
+            UserId = userId;
+            AppointmentId = appoitmentid;
+        }
     }
 }

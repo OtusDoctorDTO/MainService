@@ -25,7 +25,7 @@
                             @foreach (var appointment in Model)
                             {
                                 <tr>
-                                    <td>@appointment.PatientId</td>
+                                    <td>@appointment.Patient?.LastName @appointment.Patient?.FirstName</td>
                                     <td>@appointment.Date</td>
                                     <td>@appointment.Time</td>
                                     <td>@appointment.Price</td>

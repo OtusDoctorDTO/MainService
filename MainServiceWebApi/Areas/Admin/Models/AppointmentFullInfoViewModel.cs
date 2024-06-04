@@ -10,6 +10,7 @@ namespace MainServiceWebApi.Areas.Admin.Models
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
         public string Status { get; set; } = string.Empty;
+        public bool IsNewPatient { get; set; }
         public FullDoctorInfoViewModel? Doctor { get; set; }
         public PatientViewModel? Patient  { get; set; }
     }

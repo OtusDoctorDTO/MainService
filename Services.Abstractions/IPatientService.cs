@@ -7,5 +7,6 @@ namespace Services.Abstractions
     {
         Task<bool> AddPatientAsync(PatientDTO patient);
         Task<PatientDTO?> GetPatientProfileAsync(Guid userId);
+        Task<List<PatientDTO>?> GetByIdsAsync(Guid[] usersId);
     }
 }

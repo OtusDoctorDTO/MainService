@@ -3,21 +3,24 @@ using HelpersDTO.Authentication;
 using MainServiceWebApi.Areas.Admin.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
+using System;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class CallCenterController : Controller
     {
-        private readonly IMainService _service;
+        private readonly IMainService _mainService;
+        private readonly IPatientService _patientService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger<CallCenterController> _logger;
 
-        public CallCenterController(IMainService service, IDateTimeProvider dateTimeProvider, ILogger<CallCenterController> logger)
+        public CallCenterController(IMainService service, IDateTimeProvider dateTimeProvider, ILogger<CallCenterController> logger, IPatientService patientService)
         {
-            _service = service;
+            _mainService = service;
             _dateTimeProvider = dateTimeProvider;
             _logger = logger;
+            _patientService = patientService;
         }
 
         public IActionResult Index()
@@ -25,24 +28,41 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> NewAppointmentsAsync()
+        public async Task<IActionResult> AppointmentsAsync(int? count = 20, DateTime? since = null, DateTime? forDate = null, int[]? statuses = null)
         {
             try
             {
                 var request = new ShortAppointmentRequest()
                 {
-                    Count = 20,
-                    SinceDate = _dateTimeProvider.GetNow(),
-                    ForDate = _dateTimeProvider.GetNow().AddDays(7),
-                    Statuses = [(int)StatusEnum.BookedByUser]
+                    Count = count,
+                    SinceDate = since ?? _dateTimeProvider.GetNow(),
+                    ForDate = forDate ?? _dateTimeProvider.GetNow().AddDays(1),
+                    Statuses = statuses
                 };
+                // ***для теста
+                request.SinceDate = DateTime.Now.AddYears(-1);
+                request.ForDate = DateTime.Now.AddYears(1);
+                //***
 
-                // удалить после теста
-                request.SinceDate = _dateTimeProvider.GetNow().AddYears(-1);
-                request.ForDate = _dateTimeProvider.GetNow().AddDays(7).AddYears(1);
+                var appointments = await _mainService.GetActiveAppointnmentsAsync(request);
+                if (appointments?.Any() ?? false)
+                {
+                    var userIds = appointments!
+                        .Where(app => app.PatientId != null)
+                        .Select(app => app.PatientId!.Value)
+                        .ToArray();
 
-                var appointments = await _service.GetActiveAppointnmentsAsync(request);
-                return View(appointments?.Select(app => app.ToAppointmentViewModel()).ToList());
+                    if(userIds?.Any() ?? false)
+                    {
+                        var patients = await _patientService.GetByIdsAsync(userIds!);
+                        var result = appointments?
+                            .Select(app => app
+                            .ToAppointmentViewModel(patients?
+                                .FirstOrDefault(p=> p.Id == app.PatientId)))
+                            .ToList();
+                        return View(result);
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -50,5 +70,6 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             }
             return View();
         }
+
     }
 }
