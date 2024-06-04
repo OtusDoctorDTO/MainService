@@ -6,8 +6,6 @@ using Services.Abstractions;
 
 namespace MainServiceWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize]
     public class PatientController : Controller
     {
@@ -20,33 +18,31 @@ namespace MainServiceWebApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("Profile/{userId}")]
-        public async Task<IActionResult> Profile(Guid userId)
+        public async Task<IActionResult> Profile()
         {
             var model = new PatientViewModel { };
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var patient = await _patientService.GetPatientProfileAsync(userId);
-                    if (patient == null)
-                        return NotFound();
+                var principal = HttpContext.User;
+                var nameIdentifier = HttpContext.User.Claims.First(c => c.Type.EndsWith("claims/nameidentifier")).Value;
+                var userId = Guid.Parse(nameIdentifier);
+                var patient = await _patientService.GetPatientProfileAsync(userId);
+                if (patient == null)
+                    return NotFound();
 
-                    model = new PatientViewModel
-                    {
-                        FirstName = patient!.FirstName ?? "",
-                        LastName = patient!.LastName ?? "",
-                        Email = patient!.Email ?? "",
-                        UserId = userId
-                    };
-                }
+                model = new PatientViewModel
+                {
+                    FirstName = patient!.FirstName ?? "",
+                    LastName = patient!.LastName ?? "",
+                    Email = patient!.Email ?? "",
+                    UserId = userId
+                };
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Произошла ошибка");
                 ModelState.AddModelError("", "Произошла неизвестная ошибка. Попробуйте еще раз");
             }
-
             return View(model);
         }
     }
