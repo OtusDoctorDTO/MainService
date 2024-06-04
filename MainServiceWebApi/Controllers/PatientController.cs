@@ -1,52 +1,48 @@
-﻿using HelpersDTO.Patient.DTO;
-using HelpersDTO.Patient;
-using Microsoft.AspNetCore.Mvc;
+﻿using MainServiceWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using MainServiceWebApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
 
 namespace MainServiceWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize]
     public class PatientController : Controller
     {
         private readonly IPatientService _patientService;
+        private readonly ILogger<PatientController> _logger;
 
-        public PatientController(IPatientService patientServiceClient)
+        public PatientController(IPatientService patientServiceClient, ILogger<PatientController> logger)
         {
             _patientService = patientServiceClient;
+            _logger = logger;
         }
 
-        [HttpGet("Profile/{userId}")]
-        public async Task<IActionResult> Profile(Guid userId)
+        public async Task<IActionResult> Profile()
         {
-            var model = new PatientViewModel { };
             try
             {
-                if (ModelState.IsValid)
+                var principal = HttpContext.User;
+                var nameIdentifier = HttpContext.User.Claims.First(c => c.Type.EndsWith("claims/nameidentifier")).Value;
+                var userId = Guid.Parse(nameIdentifier);
+                var patient = await _patientService.GetPatientProfileAsync(userId);
+                if (patient == null)
+                    return RedirectToAction("Index", "Error");
+                var model = new PatientViewModel
                 {
-                    var patient = await _patientService.GetPatientProfileAsync(userId);
-                    if (patient == null)
-                        return NotFound();
-
-                    model = new PatientViewModel
-                    {
-                        FirstName = patient.FirstName,
-                        LastName = patient.LastName,
-                        Email = patient.Email,
-                        UserId = userId
-                    };
-                }
+                    FirstName = patient!.FirstName ?? "",
+                    LastName = patient!.LastName ?? "",
+                    Email = patient!.Email ?? "",
+                    UserId = userId
+                };
+                return View(model);
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
+                _logger.LogError(e, "Произошла ошибка");
                 ModelState.AddModelError("", "Произошла неизвестная ошибка. Попробуйте еще раз");
             }
-
-            return View(model);
+            return RedirectToAction("Index", "Error");
         }
     }
 }
