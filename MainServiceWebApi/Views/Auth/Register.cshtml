@@ -7,7 +7,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col-md-6">
                         <div class="form-wrap bg-white">
-                            <h4 class="btm-sep pb-3 mb-5">Войти</h4>
+                            <h4 class="btm-sep pb-3 mb-5">Регистрация</h4>
                             <form class="form" method="post">
                                 <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
                                 <div class="validation" asp-validation-summary="All"></div>
@@ -39,15 +39,9 @@
                                     <div class="col-12 text-lg-right">
                                         <a href="#" class="c-black">Забыли пароль ?</a>
                                     </div>
-                                    <div class="form-check">
-                                        <input checked class="form-check-input" type="checkbox" name="RememberMe" value="true" asp-for="RememberMe">
-                                        <label class="form-check-label" for="flexCheckChecked">
-                                            Запомнить меня?
-                                        </label>
-                                    </div>
                                     <div class="col-12 mt-30">
                                         <button type="submit" class="btn btn-lg btn-custom btn-dark btn-block" asp-controller="Auth" asp-action="Register">
-                                            Войти
+                                            Зарегистрироваться
                                         </button>
                                     </div>
                                 </div>

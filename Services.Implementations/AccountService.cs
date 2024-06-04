@@ -50,9 +50,10 @@ namespace Services.Implementations
                 var content = new StringContent(json, null, "application/json");
                 request.Content = content;
                 var response = await client.SendAsync(request);
-                if(response == null)
+                if (response == null)
                     throw new ArgumentNullException("Не пришел ответ");
-                return await response!.Content.ReadFromJsonAsync<RegistrationResponse>();
+                var result = await response!.Content.ReadFromJsonAsync<RegistrationResponse?>();
+                return result;
             }
             catch (Exception e)
             {
