@@ -121,6 +121,7 @@ namespace MainServiceWebApi.Controllers
                             FirstName = null,
                             LastName = null,
                             Phone = model.Phone,
+                            Email = model.Email,
                             IsNew = true
                         };
                         await _patientService.AddPatientAsync(patientDto);
