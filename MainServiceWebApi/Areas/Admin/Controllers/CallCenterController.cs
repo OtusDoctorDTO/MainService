@@ -1,9 +1,12 @@
 ﻿using HelpersDTO.AppointmentDto.Enums;
 using HelpersDTO.Authentication;
+using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Areas.Admin.Helpers;
+using MainServiceWebApi.Areas.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using System;
+using static MassTransit.ValidationResultExtensions;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
@@ -28,17 +31,52 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AppointmentsAsync(int? count = 20, DateTime? since = null, DateTime? forDate = null, int[]? statuses = null)
+        public async Task<IActionResult> AppointmentsAsync()
+        {
+            return await Task.Run(() => View(new AppointmentPanelViewModel()
+            {
+                Statuses = new Dictionary<StatusEnum, bool>
+                {
+                    { StatusEnum.Free, false },
+                    { StatusEnum.BookedByUser, false },
+                    { StatusEnum.Confirmed, false },
+                    { StatusEnum.Waiting, false },
+                    { StatusEnum.InProccess, false },
+                    { StatusEnum.Success, false },
+                    { StatusEnum.Сanceled, false }
+                }
+            }));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AppointmentsAsync(AppointmentPanelViewModel? search = null)
         {
             try
             {
+                search ??= new AppointmentPanelViewModel();
+                if (!search.Statuses?.Any() ?? false)
+                {
+                    search.Statuses = new Dictionary<StatusEnum, bool>
+                    {
+                        { StatusEnum.Free, false },
+                        { StatusEnum.BookedByUser, false },
+                        { StatusEnum.Confirmed, false },
+                        { StatusEnum.Waiting, false },
+                        { StatusEnum.InProccess, false },
+                        { StatusEnum.Success, false },
+                        { StatusEnum.Сanceled, false }
+                    };
+                }
+
+                search.AppointmentsSearchResult = null;
                 var request = new ShortAppointmentRequest()
                 {
-                    Count = count,
-                    SinceDate = since ?? _dateTimeProvider.GetNow(),
-                    ForDate = forDate ?? _dateTimeProvider.GetNow().AddDays(1),
-                    Statuses = statuses
+                    Count = search.Count,
+                    SinceDate = search.StartDate ?? _dateTimeProvider.GetNow(),
+                    ForDate = search.EndDate ?? _dateTimeProvider.GetNow().AddDays(1),
+                    Statuses = search.Statuses?.Where(status => status.Value == true).Select(status => (int)status.Key).ToArray()
                 };
+
                 // ***для теста
                 request.SinceDate = DateTime.Now.AddYears(-1);
                 request.ForDate = DateTime.Now.AddYears(1);
@@ -49,26 +87,25 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                 {
                     var userIds = appointments!
                         .Where(app => app.PatientId != null)
-                        .Select(app => app.PatientId!.Value)
+                        .Select(app => app.PatientId!.Value).Distinct()
                         .ToArray();
 
-                    if(userIds?.Any() ?? false)
+                    List<PatientDTO>? patients = null;
+                    if (userIds?.Any() ?? false)
                     {
-                        var patients = await _patientService.GetByIdsAsync(userIds!);
-                        var result = appointments?
-                            .Select(app => app
-                            .ToAppointmentViewModel(patients?
-                                .FirstOrDefault(p=> p.Id == app.PatientId)))
-                            .ToList();
-                        return View(result);
+                        patients = await _patientService.GetByIdsAsync(userIds!);
                     }
+                    search.AppointmentsSearchResult = appointments!
+                        .Select(app => app
+                        .ToAppointmentViewModel(patients?.FirstOrDefault(p => p.Id == app.PatientId))).ToList();
+                    return View(search);
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError("Произошла ошибка при получении списка записей для подтверждения {Message}", e.Message);
             }
-            return View();
+            return View(search);
         }
 
     }

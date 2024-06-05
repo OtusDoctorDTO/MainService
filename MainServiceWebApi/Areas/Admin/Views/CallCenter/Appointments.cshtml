@@ -1,4 +1,4 @@
-﻿@model List<AppointmentViewModel>
+﻿@model AppointmentPanelViewModel
 
 <div class="container">
     <div class="row">
@@ -6,7 +6,36 @@
             @await Html.PartialAsync("AdminMenu")
         </div>
         <div class="col-10">
-            @if (Model?.Any() ?? false)
+            <div class="row">
+                <div asp-validation-summary="All" />
+                <form method="post" class="form-group">
+                    <div class="col-4 form-floating mb-3">
+                    </div>
+
+                    <div class="col-3">
+                        <select class="form-select" name="@Model.DESC" aria-label="По дате">
+                            <option value="true" selected>По убыванию</option>
+                            <option value="false">По возрастанию</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <h3>Выберите Статусы</h3>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            <div class="form-check">
+                                <input name="@status" class="form-check-input" type="checkbox" value="@status.Value">
+                                <label class="form-check-label" for="@status.Key">
+                                    @status.Key
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="CallCenter" asp-action="Appointments">Найти заявки</button>
+                    </div>
+                </form>
+            </div>
+            @if (Model?.AppointmentsSearchResult?.Any() ?? false)
             {
                 <div class="row">
                     <table class="table">
@@ -22,7 +51,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var appointment in Model)
+                            @foreach (var appointment in Model.AppointmentsSearchResult)
                             {
                                 <tr>
                                     <td>@appointment.Patient?.LastName @appointment.Patient?.FirstName</td>
