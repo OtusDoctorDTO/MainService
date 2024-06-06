@@ -28,7 +28,7 @@ namespace MainServiceWebApi.Controllers
                 var userId = Guid.Parse(nameIdentifier);
                 var patient = await _patientService.GetPatientProfileAsync(userId);
                 if (patient == null)
-                    return NotFound();
+                    return RedirectToAction("Index", "Error");
 
                 model = new PatientViewModel
                 {

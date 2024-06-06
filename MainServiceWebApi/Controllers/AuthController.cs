@@ -62,7 +62,7 @@ namespace MainServiceWebApi.Controllers
 
                         if (!string.IsNullOrEmpty(login.ReturnUrl))
                             Redirect(login.ReturnUrl);
-                        return RedirectToAction("Index", "Profile");
+                        return RedirectToAction("Profile", "Patient");
                     }
                 }
             }
