@@ -33,19 +33,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
 
         public async Task<IActionResult> AppointmentsAsync()
         {
-            return await Task.Run(() => View(new AppointmentPanelViewModel()
-            {
-                Statuses = new Dictionary<StatusEnum, bool>
-                {
-                    { StatusEnum.Free, false },
-                    { StatusEnum.BookedByUser, false },
-                    { StatusEnum.Confirmed, false },
-                    { StatusEnum.Waiting, false },
-                    { StatusEnum.InProccess, false },
-                    { StatusEnum.Success, false },
-                    { StatusEnum.Сanceled, false }
-                }
-            }));
+            return await Task.Run(() => View(new AppointmentPanelViewModel()));
         }
 
         [HttpPost]
@@ -54,27 +42,13 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             try
             {
                 search ??= new AppointmentPanelViewModel();
-                if (!search.Statuses?.Any() ?? false)
-                {
-                    search.Statuses = new Dictionary<StatusEnum, bool>
-                    {
-                        { StatusEnum.Free, false },
-                        { StatusEnum.BookedByUser, false },
-                        { StatusEnum.Confirmed, false },
-                        { StatusEnum.Waiting, false },
-                        { StatusEnum.InProccess, false },
-                        { StatusEnum.Success, false },
-                        { StatusEnum.Сanceled, false }
-                    };
-                }
-
                 search.AppointmentsSearchResult = null;
                 var request = new ShortAppointmentRequest()
                 {
                     Count = search.Count,
                     SinceDate = search.StartDate ?? _dateTimeProvider.GetNow(),
                     ForDate = search.EndDate ?? _dateTimeProvider.GetNow().AddDays(1),
-                    Statuses = search.Statuses?.Where(status => status.Value == true).Select(status => (int)status.Key).ToArray()
+                    Statuses = search.Status != null ? new int[]{ search.Status!.Value } : null
                 };
 
                 // ***для теста

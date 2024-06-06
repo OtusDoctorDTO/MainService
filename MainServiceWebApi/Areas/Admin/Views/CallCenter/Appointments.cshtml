@@ -1,4 +1,5 @@
-﻿@model AppointmentPanelViewModel
+﻿@using HelpersDTO.AppointmentDto.Enums
+@model AppointmentPanelViewModel
 
 <div class="container">
     <div class="row">
@@ -19,16 +20,13 @@
                         </select>
                     </div>
                     <div class="col-3">
-                        <h3>Выберите Статусы</h3>
-                        @foreach (var status in Model.Statuses)
-                        {
-                            <div class="form-check">
-                                <input name="@status" class="form-check-input" type="checkbox" value="@status.Value">
-                                <label class="form-check-label" for="@status.Key">
-                                    @status.Key
-                                </label>
-                            </div>
-                        }
+                        <h3>Выберите Статус</h3>
+                        <select class="form-select" name="Status">
+                            @foreach (var name in Enum.GetNames(typeof(StatusEnum)))
+                            {
+                                <option value="@((int)Enum.Parse<StatusEnum>(name, true))">@name</option>
+                            }
+                        </select>
                     </div>
                     <div class="col-3">
                         <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="CallCenter" asp-action="Appointments">Найти заявки</button>
@@ -60,7 +58,7 @@
                                     <td>@appointment.Price</td>
                                     <td>@appointment.Status</td>
                                     <td>
-                                        <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Info" asp-route-Id="@appointment.Id" role="button">Подробнее</a>
+                                        <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Info" asp-route-id="@appointment.Id" role="button">Подробнее</a>
                                     </td>
                                     <td>
                                         <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@appointment.Id" asp-route-isConfirm="false" role="button">Удалить</a>

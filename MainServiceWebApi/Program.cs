@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Services.Implementations;
 using System.Text;
+using System.Transactions;
 
 namespace MainServiceWebApi
 {
@@ -71,32 +72,30 @@ namespace MainServiceWebApi
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.AddMassTransit(x =>
-            //{
-            //    x.AddConsumer<MainConsumer>();
+            builder.Services.AddMassTransit(x =>
+            {
+                //x.AddConsumer<>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(receptionConfig.BusConfig.Host, receptionConfig.BusConfig.Port, receptionConfig.BusConfig.Path, h =>
+                    {
+                        h.Username(receptionConfig.BusConfig.Username);
+                        h.Password(receptionConfig.BusConfig.Password);
+                    });
 
+                    cfg.UseTransaction(_ =>
+                    {
+                        _.Timeout = TimeSpan.FromSeconds(60);
+                        _.IsolationLevel = IsolationLevel.ReadCommitted;
+                    });
 
-            //    x.UsingRabbitMq((context, cfg) =>
-            //    {
-            //        cfg.Host(receptionConfig.BusConfig.Host, receptionConfig.BusConfig.Port, receptionConfig.BusConfig.Path, h =>
-            //        {
-            //            h.Username(receptionConfig.BusConfig.Username);
-            //            h.Password(receptionConfig.BusConfig.Password);
-            //        });
-
-            //        cfg.UseTransaction(_ =>
-            //        {
-            //            _.Timeout = TimeSpan.FromSeconds(60);
-            //            _.IsolationLevel = IsolationLevel.ReadCommitted;
-            //        });
-
-            //        cfg.ReceiveEndpoint(new TemporaryEndpointDefinition(), e =>
-            //        {
-            //            e.ConfigureConsumer<MainConsumer>(context);
-            //        });
-            //        cfg.ConfigureEndpoints(context);
-            //    });
-            //});
+                    //cfg.ReceiveEndpoint(new TemporaryEndpointDefinition(), e =>
+                    //{
+                    //    e.ConfigureConsumer<MainConsumer>(context);
+                    //});
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
             builder.Services.AddTransient<IAccountService, AccountService>();

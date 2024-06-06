@@ -21,7 +21,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
         private readonly IDoctorService _doctorService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IPatientService _patientService;
-        private readonly IRequestClient<CreateNewPassportRequest> _client;
+        IRequestClient<CreateNewPassportRequest> _client;
         public AppointmentController(
             ILogger<AppointmentController> logger,
             IAppointmentService appointmentService,
