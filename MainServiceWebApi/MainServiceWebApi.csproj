@@ -39,4 +39,8 @@
     <None Include="appsettings.Production.json" CopyToOutputDirectory="Always" CupyToPublishDirectory="Always" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Consumers\" />
+  </ItemGroup>
+
 </Project>

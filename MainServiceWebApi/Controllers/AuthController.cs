@@ -62,7 +62,7 @@ namespace MainServiceWebApi.Controllers
 
                         if (!string.IsNullOrEmpty(login.ReturnUrl))
                             Redirect(login.ReturnUrl);
-                        return RedirectToAction("Profile", "Patient");
+                        return RedirectToAction("Index", "Profile");
                     }
                 }
             }
@@ -117,8 +117,8 @@ namespace MainServiceWebApi.Controllers
                     if (userId != null)
                     {
                         await _patientService.AddPatientAsync(new PatientDTO
-                        { 
-                            UserId = userId, 
+                        {
+                            UserId = userId,
                             IsNew = true,
                             Phone = model.Phone,
                         });

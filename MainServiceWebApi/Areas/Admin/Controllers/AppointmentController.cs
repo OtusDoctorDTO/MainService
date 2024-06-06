@@ -1,15 +1,13 @@
-﻿using HelpersDTO.Doctor.DTO.Models;
-using MainServiceWebApi.Areas.Admin.Models;
-using MainServiceWebApi.Helpers;
-using Microsoft.AspNetCore.Mvc;
-using Services.Abstractions;
-using MainServiceWebApi.Areas.Admin.Helpers;
-using HelpersDTO.AppointmentDto.Enums;
-using System.Threading.Tasks;
-using HelpersDTO.CallCenter.DTO;
-using MassTransit;
+﻿using HelpersDTO.AppointmentDto.Enums;
+using HelpersDTO.Doctor.DTO.Models;
 using HelpersDTO.Patient;
 using HelpersDTO.Patient.DTO;
+using MainServiceWebApi.Areas.Admin.Helpers;
+using MainServiceWebApi.Areas.Admin.Models;
+using MainServiceWebApi.Helpers;
+using MassTransit;
+using Microsoft.AspNetCore.Mvc;
+using Services.Abstractions;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
@@ -108,6 +106,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                         },
                         UserId = model.UserId
                     });
+
                     _logger.LogInformation("Получен ответ CreateNewPassportDtoResponse {responce}", responce.Message);
 
                     if (responce.Message.Success && string.IsNullOrEmpty(responce.Message.Message))
