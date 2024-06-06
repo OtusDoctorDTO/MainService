@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
-
 namespace MainServiceWebApi.Controllers
 {
     [Authorize]
@@ -20,7 +19,6 @@ namespace MainServiceWebApi.Controllers
 
         public async Task<IActionResult> Profile()
         {
-            var model = new PatientViewModel { };
             try
             {
                 var principal = HttpContext.User;
@@ -29,21 +27,22 @@ namespace MainServiceWebApi.Controllers
                 var patient = await _patientService.GetPatientProfileAsync(userId);
                 if (patient == null)
                     return RedirectToAction("Index", "Error");
-
-                model = new PatientViewModel
+                var model = new PatientViewModel
                 {
                     FirstName = patient!.FirstName ?? "",
                     LastName = patient!.LastName ?? "",
-                    Email = patient!.Email ?? "",
-                    UserId = userId
+                    Email = patient.Email ?? "",
+                    UserId = userId,
+                    PhoneNumber = patient.Phone,
                 };
+                return View(model);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Произошла ошибка");
                 ModelState.AddModelError("", "Произошла неизвестная ошибка. Попробуйте еще раз");
             }
-            return View(model);
+            return RedirectToAction("Index", "Error");
         }
     }
 }
