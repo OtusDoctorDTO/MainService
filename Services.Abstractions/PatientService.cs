@@ -17,26 +17,27 @@ namespace Services.Abstractions
         public async Task<bool> AddPatientAsync(PatientDTO patient)
         {
             var url = $"{_config.PatientHost}/api/Patients/Add";
-            var client = new HttpClient();
             var json = JsonConvert.SerializeObject(patient);
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            var content = new StringContent(json, null, "application/json");
-            request.Content = content;
-            var response = await client.SendAsync(request);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(url, content);
             if (response == null)
                 throw new ArgumentNullException("Не пришел ответ");
+
             return response.IsSuccessStatusCode;
         }
 
         public async Task<PatientDTO?> GetPatientProfileAsync(Guid userId)
         {
-            var response = await _httpClient.GetAsync($"{_config.PatientHost}/Patients/{userId}");
+            var url = $"{_config.PatientHost}/api/Patients/{userId}";
+            var response = await _httpClient.GetAsync(url);
+
             if (response == null)
                 throw new ArgumentNullException("Не пришел ответ");
 
             if (!response.IsSuccessStatusCode)
             {
-                return null; // или выбросьте исключение, если это необходимо
+                return null;
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
@@ -46,11 +47,6 @@ namespace Services.Abstractions
             }
 
             var patient = JsonConvert.DeserializeObject<PatientDTO>(responseContent);
-            if (patient == null)
-            {
-                return null;
-            }
-
             return patient;
         }
     }

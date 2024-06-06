@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
-
 namespace MainServiceWebApi.Controllers
 {
     [Authorize]
@@ -32,8 +31,9 @@ namespace MainServiceWebApi.Controllers
                 {
                     FirstName = patient!.FirstName ?? "",
                     LastName = patient!.LastName ?? "",
-                    Email = patient!.Email ?? "",
-                    UserId = userId
+                    Email = patient.Email ?? "",
+                    UserId = userId,
+                    PhoneNumber = patient.Phone,
                 };
                 return View(model);
             }

@@ -115,12 +115,16 @@ namespace MainServiceWebApi.Controllers
                     var userId = registerResponce.UserId;
                     if (userId != null)
                     {
-                        await _patientService.AddPatientAsync(new PatientDTO
+                        var patientDto = new PatientDTO
                         {
-                            UserId = userId,
-                            IsNew = true,
+                            UserId = userId!.Value,
+                            FirstName = null,
+                            LastName = null,
                             Phone = model.Phone,
-                        });
+                            Email = model.Email,
+                            IsNew = true
+                        };
+                        await _patientService.AddPatientAsync(patientDto);
                     }
 
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
