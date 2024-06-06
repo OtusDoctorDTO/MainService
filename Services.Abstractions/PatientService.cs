@@ -16,7 +16,7 @@ namespace Services.Abstractions
 
         public async Task<bool> AddPatientAsync(PatientDTO patient)
         {
-            var url = $"{_config.PatientHost}/Patients/Add";
+            var url = $"{_config.PatientHost}/api/Patients/Add";
             var json = JsonConvert.SerializeObject(patient);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
@@ -29,7 +29,7 @@ namespace Services.Abstractions
 
         public async Task<PatientDTO?> GetPatientProfileAsync(Guid userId)
         {
-            var url = $"{_config.PatientHost}/Patients/{userId}";
+            var url = $"{_config.PatientHost}/api/Patients/{userId}";
             var response = await _httpClient.GetAsync(url);
 
             if (response == null)
