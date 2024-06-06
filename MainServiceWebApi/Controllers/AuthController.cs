@@ -117,7 +117,7 @@ namespace MainServiceWebApi.Controllers
                     {
                         var patientDto = new PatientDTO
                         {
-                            UserId = userId.Value,
+                            UserId = userId!.Value,
                             FirstName = null,
                             LastName = null,
                             Phone = model.Phone,
