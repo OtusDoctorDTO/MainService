@@ -1,12 +1,9 @@
-﻿using HelpersDTO.AppointmentDto.Enums;
-using HelpersDTO.Authentication;
+﻿using HelpersDTO.Authentication;
 using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Areas.Admin.Helpers;
 using MainServiceWebApi.Areas.Admin.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
-using System;
-using static MassTransit.ValidationResultExtensions;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
@@ -48,7 +45,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                     Count = search.Count,
                     SinceDate = search.StartDate ?? _dateTimeProvider.GetNow(),
                     ForDate = search.EndDate ?? _dateTimeProvider.GetNow().AddDays(1),
-                    Statuses = search.Status != null ? new int[]{ search.Status!.Value } : null
+                    Statuses = search.Status != null ? new int[] { search.Status!.Value } : null
                 };
 
                 // ***для теста
