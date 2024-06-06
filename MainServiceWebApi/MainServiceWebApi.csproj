@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="HelpersDTO" Version="1.0.34" />
     <PackageReference Include="MassTransit" Version="8.2.2" />
     <PackageReference Include="MassTransit.Abstractions" Version="8.2.2" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
@@ -25,11 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\Components\" />
-    <Folder Include="Consumers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Domain.Entities\Domain.Entities.csproj" />
     <ProjectReference Include="..\Providers.Contracts\Providers.Contracts.csproj" />
     <ProjectReference Include="..\Services.Abstractions\Services.Abstractions.csproj" />
@@ -43,6 +37,10 @@
     <None Include="appsettings.Development.json" CopyToOutputDirectory="Always" CupyToPublishDirectory="Always" />
     <None Include="appsettings.Test.json" CopyToOutputDirectory="Always" CupyToPublishDirectory="Always" />
     <None Include="appsettings.Production.json" CopyToOutputDirectory="Always" CupyToPublishDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Consumers\" />
   </ItemGroup>
 
 </Project>

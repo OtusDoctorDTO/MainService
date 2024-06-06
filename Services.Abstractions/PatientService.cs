@@ -27,6 +27,21 @@ namespace Services.Abstractions
             return response.IsSuccessStatusCode;
         }
 
+        public async Task<List<PatientDTO>?> GetByIdsAsync(Guid[] usersId)
+        {
+            var url = $"{_config.PatientHost}/api/Patients/GetByIds";
+            var json = JsonConvert.SerializeObject(usersId);
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            var content = new StringContent(json, null, "application/json");
+            request.Content = content;
+            var client = new HttpClient();
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content.ReadAsStringAsync();
+            var patients = JsonConvert.DeserializeObject<List<PatientDTO>>(data);
+            return patients;
+        }
+
         public async Task<PatientDTO?> GetPatientProfileAsync(Guid userId)
         {
             var url = $"{_config.PatientHost}/api/Patients/{userId}";

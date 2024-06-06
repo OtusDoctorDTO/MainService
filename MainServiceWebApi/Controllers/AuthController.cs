@@ -18,7 +18,7 @@ namespace MainServiceWebApi.Controllers
             IAccountService accountService,
             IApplicationConfig config,
             ITokenService tokenService,
-            IPatientService patientService, 
+            IPatientService patientService,
             ILogger<AuthController> logger)
         {
             _accountService = accountService;
@@ -58,6 +58,7 @@ namespace MainServiceWebApi.Controllers
                     if (result)
                     {
                         HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
+
                         if (!string.IsNullOrEmpty(login.ReturnUrl))
                             Redirect(login.ReturnUrl);
                         return RedirectToAction("Profile", "Patient");
@@ -108,7 +109,6 @@ namespace MainServiceWebApi.Controllers
                         registerResponce?.Messages?.ForEach(message => ModelState.AddModelError("", message));
                         return View(model);
                     }
-
 
                     // Добавление пациента в PatientService
                     //TODO переделать на асинхронное взаимодействие

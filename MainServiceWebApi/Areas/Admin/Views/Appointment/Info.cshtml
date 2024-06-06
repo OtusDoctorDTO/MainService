@@ -1,4 +1,5 @@
-﻿@model AppointmentFullInfoViewModel?
+﻿@using HelpersDTO.AppointmentDto.Enums
+@model AppointmentFullInfoViewModel?
 
 <div class="container">
     <div class="row">
@@ -9,7 +10,7 @@
             @if (Model != null)
             {
                 <div class="row">
-                    ФИО пациента:
+                    ФИО пациента: @Model.Patient?.LastName @Model.Patient?.FirstName
                 </div>
                 <div class="row">
                     Дата записи: @Model.Date
@@ -23,11 +24,29 @@
                 <div class="row">
                     Доктор: @Model.Doctor?.LastName @Model.Doctor?.FirstName @Model.Doctor?.MiddleName
                 </div>
+                if (Model.Status == "Забронировано пользователем")
+                {
+                    <div class="row">
+                        <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="@((int)StatusEnum.Waiting)" role="button">Подтвердить новую запись</a>
+                    </div>
+                }
+                if (Model.Status == "В ожидании приема")
+                {
+                    if (Model.IsNewPatient)
+                    {
+                        <div class="row">
+                            <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="CreateNewContract" asp-route-id="@Model.Id" asp-route-userId="@Model.Patient!.UserId" role="button">Составить договор</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-userId="@Model.Patient?.UserId" asp-route-status="@((int)StatusEnum.Waiting)" role="button">Подтвердить прием</a>
+                        </div>
+                    }
+                }
                 <div class="row">
-                    <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@Model.Id" asp-route-isConfirm="true" role="button">Подтвердить</a>
-                </div>
-                <div class="row">
-                    <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@Model.Id" asp-route-isConfirm="false" role="button">Удалить</a>
+                    <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="@((int)StatusEnum.Сanceled)" role="button">Удалить</a>
                 </div>
             }
             else

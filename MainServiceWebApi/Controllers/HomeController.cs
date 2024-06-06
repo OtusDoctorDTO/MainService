@@ -28,6 +28,7 @@ namespace MainServiceWebApi.Controllers
             try
             {
                 // получение свободных записей с сегодняшнего дня на неделю вперед
+                
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,

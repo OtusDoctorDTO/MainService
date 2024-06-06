@@ -1,4 +1,5 @@
-﻿@model List<AppointmentViewModel>
+﻿@using HelpersDTO.AppointmentDto.Enums
+@model AppointmentPanelViewModel
 
 <div class="container">
     <div class="row">
@@ -6,7 +7,33 @@
             @await Html.PartialAsync("AdminMenu")
         </div>
         <div class="col-10">
-            @if (Model?.Any() ?? false)
+            <div class="row">
+                <div asp-validation-summary="All" />
+                <form method="post" class="form-group">
+                    <div class="col-4 form-floating mb-3">
+                    </div>
+
+                    <div class="col-3">
+                        <select class="form-select" name="@Model.DESC" aria-label="По дате">
+                            <option value="true" selected>По убыванию</option>
+                            <option value="false">По возрастанию</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <h3>Выберите Статус</h3>
+                        <select class="form-select" name="Status">
+                            @foreach (var name in Enum.GetNames(typeof(StatusEnum)))
+                            {
+                                <option value="@((int)Enum.Parse<StatusEnum>(name, true))">@name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="CallCenter" asp-action="Appointments">Найти заявки</button>
+                    </div>
+                </form>
+            </div>
+            @if (Model?.AppointmentsSearchResult?.Any() ?? false)
             {
                 <div class="row">
                     <table class="table">
@@ -22,16 +49,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var appointment in Model)
+                            @foreach (var appointment in Model.AppointmentsSearchResult)
                             {
                                 <tr>
-                                    <td>@appointment.PatientId</td>
+                                    <td>@appointment.Patient?.LastName @appointment.Patient?.FirstName</td>
                                     <td>@appointment.Date</td>
                                     <td>@appointment.Time</td>
                                     <td>@appointment.Price</td>
                                     <td>@appointment.Status</td>
                                     <td>
-                                        <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Info" asp-route-Id="@appointment.Id" role="button">Подробнее</a>
+                                        <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="Info" asp-route-id="@appointment.Id" role="button">Подробнее</a>
                                     </td>
                                     <td>
                                         <a class="btn btn-danger" asp-area="Admin" asp-controller="Appointment" asp-action="Confirm" asp-route-id="@appointment.Id" asp-route-isConfirm="false" role="button">Удалить</a>
