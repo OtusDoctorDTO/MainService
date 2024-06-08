@@ -28,7 +28,7 @@ namespace MainServiceWebApi.Controllers
             try
             {
                 // получение свободных записей с сегодняшнего дня на неделю вперед
-                
+
                 var request = new ShortAppointmentRequest()
                 {
                     Count = 20,
@@ -40,24 +40,27 @@ namespace MainServiceWebApi.Controllers
                 var appointments = await _service.GetActiveAppointnmentsAsync(request);
                 if (appointments?.Any() ?? false)
                 {
-                    var doctorsIds = appointments!.Select(app => app.DoctorId).Distinct().ToArray();
-                    var doctors = await _service.GetDoctorsByIds(doctorsIds);
-                    if (doctors?.Any() ?? false)
+                    var doctorsIds = appointments!.Where(a => a.DoctorId != null).Select(app => app.DoctorId!.Value).Distinct().ToArray();
+                    if (doctorsIds?.Any() ?? false)
                     {
-                        var dataVM = doctors?.Select(doctor => new MainPageViewModel()
+                        var doctors = await _service.GetDoctorsByIds(doctorsIds);
+                        if (doctors?.Any() ?? false)
                         {
-                            DoctorId = doctor.Id,
-                            FullName = $"{doctor.User.LastName} {doctor.User.FirstName} {doctor.User.MiddleName}".Trim(),
-                            Appointments = appointments
-                            .Where(app => app.DoctorId == doctor.Id)
-                            .GroupBy(app => app.Date)
-                            .Select(x => new ShortAppointmentViewModel()
+                            var dataVM = doctors?.Select(doctor => new MainPageViewModel()
                             {
-                                Date = x.Key,
-                                Data = x.OrderBy(x => x.Time).ToDictionary(x => x.Id, y => y.Time)
-                            }).ToList()
-                        }).ToList();
-                        return View(dataVM);
+                                DoctorId = doctor.Id,
+                                FullName = $"{doctor.User.LastName} {doctor.User.FirstName} {doctor.User.MiddleName}".Trim(),
+                                Appointments = appointments
+                                .Where(app => app.DoctorId == doctor.Id)
+                                .GroupBy(app => app.Date)
+                                .Select(x => new ShortAppointmentViewModel()
+                                {
+                                    Date = x.Key,
+                                    Data = x.OrderBy(x => x.Time).ToDictionary(x => x.Id, y => y.Time)
+                                }).ToList()
+                            }).ToList();
+                            return View(dataVM);
+                        }
                     }
                 }
             }

@@ -4,6 +4,6 @@ namespace Services.Abstractions
 {
     public interface IDoctorService
     {
-        Task<FullInfoDoctorDTO?> GetById(Guid id);
+        Task<FullInfoDoctorDTO?> GetById(Guid? id);
     }
 }

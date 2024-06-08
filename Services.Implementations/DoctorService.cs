@@ -15,10 +15,11 @@ namespace Services.Implementations
             _logger = logger;
         }
 
-        public async Task<FullInfoDoctorDTO?> GetById(Guid id)
+        public async Task<FullInfoDoctorDTO?> GetById(Guid? id)
         {
             try
             {
+                if (id == null) return null;
                 var url = $"{_config.DoctorHost}/api/Doctor/GetFullInfoById?id={id}";
                 var request = new HttpRequestMessage(HttpMethod.Post, url);
                 var client = new HttpClient();

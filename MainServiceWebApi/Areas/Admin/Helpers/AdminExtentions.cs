@@ -25,13 +25,14 @@ namespace MainServiceWebApi.Areas.Admin.Helpers
 
         public static AppointmentFullInfoViewModel? ToAppointmentFullInfoVM(this AppointmentDto? appointment)
         {
-            if(appointment == null) return null;
+            if (appointment == null) return null;
             return new AppointmentFullInfoViewModel()
             {
                 Id = appointment.Id,
                 Price = appointment.Price,
-                StartDate = appointment.Time,
-                Status = appointment.Status ?? ""
+                Date = appointment.Date,
+                Time = appointment.Time,
+                Status = appointment.Status ?? "",
             };
         }
     }
