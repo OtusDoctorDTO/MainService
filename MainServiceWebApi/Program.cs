@@ -1,6 +1,5 @@
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Services.Implementations;
@@ -121,7 +120,7 @@ namespace MainServiceWebApi
             app.UseAuthentication();
             app.UseAuthorization();
 
-            #pragma warning disable ASP0014 // Suggest using top level route registrations
+#pragma warning disable ASP0014 // Suggest using top level route registrations
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAreaControllerRoute(
