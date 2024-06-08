@@ -30,6 +30,10 @@ namespace MainServiceWebApi.Areas.Admin.Models
         {
             UserId = userId;
             AppointmentId = appoitmentid;
+            Passport= new();
+        }
+        public CheckPatientViewModel()
+        {
         }
     }
 }
