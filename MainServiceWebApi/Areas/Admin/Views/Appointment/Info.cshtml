@@ -38,7 +38,7 @@
                     if (Model.Patient?.IsNew ?? false)
                     {
                         <div class="row">
-                            <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="CreateNewContract" asp-route-id="@Model.Id" asp-route-userId="@Model.Patient!.UserId" role="button">Заключить договор</a>
+                            <a class="btn btn-primary" asp-area="Admin" asp-controller="Patient" asp-action="CreateNewContract" asp-route-id="@Model.Id" asp-route-userId="@Model.Patient!.UserId" role="button">Заключить договор</a>
                         </div>
                     }
                     else

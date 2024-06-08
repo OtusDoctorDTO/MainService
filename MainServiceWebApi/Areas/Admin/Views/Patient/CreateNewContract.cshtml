@@ -1,0 +1,79 @@
+﻿@model CheckPatientViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            @await Html.PartialAsync("AdminMenu")
+        </div>
+        <div class="col-10">
+            @if (Model != null)
+            {
+                <div class="row">
+                    <div class="col">
+                        <div class="py-5">
+                            <h4>Создание договора</h4>
+                            <form method="post" class="form-group" enctype="multipart/form-data">
+                                <div class="text-danger" asp-validation-summary="All" />
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" name="@Model.LastName" placeholder="Фамилия">
+                                        <label for="floatingInput">Фамилия</label>
+                                        <span asp-validation-for="LastName"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" name="@Model.FirstName" placeholder="Имя">
+                                        <label for="floatingInput">Имя</label>
+                                        <span asp-validation-for="FirstName"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" name="@Model.MiddleName" placeholder="Отчество">
+                                        <label for="floatingInput">Отчество</label>
+                                        <span asp-validation-for="MiddleName"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" name="@Model.Passport.Series" placeholder="Серия">
+                                        <label for="floatingInput">Серия</label>
+                                        <span asp-validation-for="Passport.Series"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="text" class="form-control" name="@Model.Passport.Number" placeholder="Номер">
+                                        <label for="floatingInput">Номер</label>
+                                        <span asp-validation-for="Passport.Number"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="datetime" class="form-control" name="@Model.Passport.IssueDate" placeholder="Дата выдачи">
+                                        <label for="floatingInput">Дата выдачи</label>
+                                        <span asp-validation-for="Passport.IssueDate"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="@Model.Passport.SubdivisionCode" placeholder="Код подразделения">
+                                        <label for="floatingInput">Код подразделения</label>
+                                        <span asp-validation-for="Passport.SubdivisionCode"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" name="@Model.Passport.IssuedBy" placeholder="Кем выдан">
+                                        <label for="floatingInput">Кем выдан</label>
+                                        <span asp-validation-for="Passport.IssuedBy"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-primary" asp-area="Admin" asp-controller="Patient" asp-action="CreateNewContract">Создать договор</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-danger">
+                    Такой записи не существует
+                </div>
+            }
+        </div>
+    </div>
+</div>
