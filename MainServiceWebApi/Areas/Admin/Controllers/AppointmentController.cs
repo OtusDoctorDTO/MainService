@@ -12,29 +12,20 @@ using Services.Abstractions;
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class AppointmentController : Controller
+    public class AppointmentController(
+        ILogger<AppointmentController> logger,
+        IAppointmentService appointmentService,
+        IDoctorService doctorService,
+        IDateTimeProvider dateTimeProvider,
+        IPatientService patientService,
+        IRequestClient<CreateNewPassportRequest> client) : Controller
     {
-        private readonly ILogger<AppointmentController> _logger;
-        private readonly IAppointmentService _appointmentService;
-        private readonly IDoctorService _doctorService;
-        private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly IPatientService _patientService;
-        IRequestClient<CreateNewPassportRequest> _client;
-        public AppointmentController(
-            ILogger<AppointmentController> logger,
-            IAppointmentService appointmentService,
-            IDoctorService doctorService,
-            IDateTimeProvider dateTimeProvider,
-            IPatientService patientService,
-            IRequestClient<CreateNewPassportRequest> client)
-        {
-            _logger = logger;
-            _appointmentService = appointmentService;
-            _doctorService = doctorService;
-            _dateTimeProvider = dateTimeProvider;
-            _patientService = patientService;
-            _client = client;
-        }
+        private readonly ILogger<AppointmentController> _logger = logger;
+        private readonly IAppointmentService _appointmentService = appointmentService;
+        private readonly IDoctorService _doctorService = doctorService;
+        private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
+        private readonly IPatientService _patientService = patientService;
+        private readonly IRequestClient<CreateNewPassportRequest> _client = client;
 
         public async Task<IActionResult> InfoAsync(Guid id)
         {
@@ -71,7 +62,7 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
             {
                 var result = await _appointmentService.UpdateStatusAsync(id, status);
                 if (result)
-                    return RedirectToAction("Appointments", "CallCenter");
+                    return RedirectToAction("Appointments", "Admin");
             }
             catch (Exception e)
             {

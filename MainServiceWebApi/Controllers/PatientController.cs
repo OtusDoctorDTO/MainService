@@ -6,16 +6,10 @@ using Services.Abstractions;
 namespace MainServiceWebApi.Controllers
 {
     [Authorize]
-    public class PatientController : Controller
+    public class PatientController(IPatientService patientServiceClient, ILogger<PatientController> logger) : Controller
     {
-        private readonly IPatientService _patientService;
-        private readonly ILogger<PatientController> _logger;
-
-        public PatientController(IPatientService patientServiceClient, ILogger<PatientController> logger)
-        {
-            _patientService = patientServiceClient;
-            _logger = logger;
-        }
+        private readonly IPatientService _patientService = patientServiceClient;
+        private readonly ILogger<PatientController> _logger = logger;
 
         public async Task<IActionResult> Profile()
         {
@@ -33,7 +27,7 @@ namespace MainServiceWebApi.Controllers
                     LastName = patient!.LastName ?? "",
                     Email = patient.Email ?? "",
                     UserId = userId,
-                    PhoneNumber = patient.Phone,
+                    PhoneNumber = patient.Phone ?? "",
                 };
                 return View(model);
             }

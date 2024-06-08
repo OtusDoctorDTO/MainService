@@ -8,14 +8,14 @@ using Services.Abstractions;
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CallCenterController : Controller
+    public class AdminController : Controller
     {
         private readonly IMainService _mainService;
         private readonly IPatientService _patientService;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ILogger<CallCenterController> _logger;
+        private readonly ILogger<AdminController> _logger;
 
-        public CallCenterController(IMainService service, IDateTimeProvider dateTimeProvider, ILogger<CallCenterController> logger, IPatientService patientService)
+        public AdminController(IMainService service, IDateTimeProvider dateTimeProvider, ILogger<AdminController> logger, IPatientService patientService)
         {
             _mainService = service;
             _dateTimeProvider = dateTimeProvider;
