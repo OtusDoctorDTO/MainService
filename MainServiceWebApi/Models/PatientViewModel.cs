@@ -8,5 +8,6 @@
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
         public Guid? UserId { get; set; }
+        public bool IsNew { get; set; }
     }
 }

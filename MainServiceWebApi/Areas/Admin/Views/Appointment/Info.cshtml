@@ -24,6 +24,9 @@
                 <div class="row">
                     Доктор: @Model.Doctor?.LastName @Model.Doctor?.FirstName @Model.Doctor?.MiddleName
                 </div>
+                <div class="row">
+                    Статус: @Model.Status
+                </div>
                 if (Model.Status == "Забронировано пользователем")
                 {
                     <div class="row">
@@ -32,7 +35,7 @@
                 }
                 if (Model.Status == "В ожидании приема")
                 {
-                    if (Model.IsNewPatient)
+                    if (Model.Patient?.IsNew ?? false)
                     {
                         <div class="row">
                             <a class="btn btn-primary" asp-area="Admin" asp-controller="Appointment" asp-action="CreateNewContract" asp-route-id="@Model.Id" asp-route-userId="@Model.Patient!.UserId" role="button">Заключить договор</a>
