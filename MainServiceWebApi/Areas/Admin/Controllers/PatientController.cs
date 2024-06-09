@@ -16,13 +16,12 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
         private readonly IRequestClient<CreateNewPassportRequest> _client = client;
 
 
-        public async Task<IActionResult> CreateNewContractAsync(Guid id, Guid userId)
+        public IActionResult CreateNewContractAsync(Guid id, Guid userId)
         {
-            return await Task.Run(() => View(new CheckPatientViewModel(userId, id)));
+            return View(new CheckPatientViewModel(userId, id));
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateNewContractAsync(CheckPatientViewModel model)
         {
             if (ModelState.IsValid && model.Passport != null)

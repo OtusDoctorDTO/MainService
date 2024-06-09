@@ -88,6 +88,7 @@ namespace MainServiceWebApi.Helpers
             if (patient == null) return null;
             return new PatientViewModel()
             {
+                UserId = patient.UserId,
                 FirstName = patient.FirstName ?? "",
                 LastName = patient.LastName ?? "",
                 Email = patient.Email ?? "",

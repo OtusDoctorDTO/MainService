@@ -12,7 +12,9 @@
                     <div class="col">
                         <div class="py-5">
                             <h4>Создание договора</h4>
-                            <form method="post" class="form-group" enctype="multipart/form-data">
+                            <form method="post" class="form-group">
+                                <input type="hidden" name="UserId" value="@Model.UserId" />
+                                <input type="hidden" name="AppointmentId" value="@Model.AppointmentId" />
                                 <div class="text-danger" asp-validation-summary="All" />
                                 <div class="row">
                                     <div class="col-4">
@@ -43,7 +45,7 @@
                                         <span asp-validation-for="Passport.Number"></span>
                                     </div>
                                     <div class="col-4">
-                                        <input type="datetime" class="form-control" name="@Model.Passport.IssueDate" placeholder="Дата выдачи">
+                                        <input type="date" class="form-control" name="@Model.Passport.IssueDate" placeholder="Дата выдачи">
                                         <label for="floatingInput">Дата выдачи</label>
                                         <span asp-validation-for="Passport.IssueDate"></span>
                                     </div>
