@@ -15,7 +15,7 @@ namespace MainServiceWebApi.Models
         /// Номер
         /// </summary>
         [Required(ErrorMessage = "Введите номер")]
-        [StringLength(6, MinimumLength = 6, ErrorMessage = "Длина строки должна быть 6 символа")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "Длина строки должна быть 6 символов")]
         public string? Number { get; set; }
 
         /// <summary>

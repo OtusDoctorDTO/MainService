@@ -18,46 +18,46 @@
                                 <div class="text-danger" asp-validation-summary="All" />
                                 <div class="row">
                                     <div class="col-4">
-                                        <input type="text" class="form-control" name="@Model.LastName" placeholder="Фамилия">
+                                        <input type="text" class="form-control" name="LastName" placeholder="Фамилия" value="@Model.LastName">
                                         <label for="floatingInput">Фамилия</label>
                                         <span asp-validation-for="LastName"></span>
                                     </div>
                                     <div class="col-4">
-                                        <input type="text" class="form-control" name="@Model.FirstName" placeholder="Имя">
+                                        <input type="text" class="form-control" name="FirstName" placeholder="Имя" value="@Model.FirstName">
                                         <label for="floatingInput">Имя</label>
                                         <span asp-validation-for="FirstName"></span>
                                     </div>
                                     <div class="col-4">
-                                        <input type="text" class="form-control" name="@Model.MiddleName" placeholder="Отчество">
+                                        <input type="text" class="form-control" name="MiddleName" placeholder="Отчество" value="@Model.MiddleName">
                                         <label for="floatingInput">Отчество</label>
                                         <span asp-validation-for="MiddleName"></span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-4">
-                                        <input type="text" class="form-control" name="@Model.Passport.Series" placeholder="Серия">
+                                        <input type="text" class="form-control" name="Passport.Series" placeholder="Серия" value="@Model.Passport.Series">
                                         <label for="floatingInput">Серия</label>
                                         <span asp-validation-for="Passport.Series"></span>
                                     </div>
                                     <div class="col-4">
-                                        <input type="text" class="form-control" name="@Model.Passport.Number" placeholder="Номер">
+                                        <input type="text" class="form-control" name="Passport.Number" placeholder="Номер" value="@Model.Passport.Number">
                                         <label for="floatingInput">Номер</label>
                                         <span asp-validation-for="Passport.Number"></span>
                                     </div>
                                     <div class="col-4">
-                                        <input type="date" class="form-control" name="@Model.Passport.IssueDate" placeholder="Дата выдачи">
+                                        <input type="date" class="form-control" name="Passport.IssueDate" placeholder="Дата выдачи" value="@Model.Passport.IssueDate">
                                         <label for="floatingInput">Дата выдачи</label>
                                         <span asp-validation-for="Passport.IssueDate"></span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="@Model.Passport.SubdivisionCode" placeholder="Код подразделения">
+                                        <input type="text" class="form-control" name="Passport.SubdivisionCode" placeholder="Код подразделения" value="@Model.Passport.SubdivisionCode">
                                         <label for="floatingInput">Код подразделения</label>
                                         <span asp-validation-for="Passport.SubdivisionCode"></span>
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="@Model.Passport.IssuedBy" placeholder="Кем выдан">
+                                        <input type="text" class="form-control" name="Passport.IssuedBy" placeholder="Кем выдан" value="@Model.Passport.IssuedBy">
                                         <label for="floatingInput">Кем выдан</label>
                                         <span asp-validation-for="Passport.IssuedBy"></span>
                                     </div>

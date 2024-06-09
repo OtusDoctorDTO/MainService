@@ -69,7 +69,7 @@ namespace MainServiceWebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddMassTransit(x =>
             {
-                //x.AddConsumer<>();
+
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(receptionConfig.BusConfig.Host, receptionConfig.BusConfig.Port, receptionConfig.BusConfig.Path, h =>
@@ -84,10 +84,9 @@ namespace MainServiceWebApi
                         _.IsolationLevel = IsolationLevel.ReadCommitted;
                     });
 
-                    //cfg.ReceiveEndpoint(new TemporaryEndpointDefinition(), e =>
-                    //{
-                    //    e.ConfigureConsumer<MainConsumer>(context);
-                    //});
+                    cfg.ReceiveEndpoint(new TemporaryEndpointDefinition(), e =>
+                    {
+                    });
                     cfg.ConfigureEndpoints(context);
                 });
             });
