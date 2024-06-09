@@ -6,10 +6,12 @@ namespace MainServiceWebApi.Areas.Admin.Models
     {
         public Guid Id { get; set; }
         public decimal Price { get; set; }
-        public DateTime StartDate { get; set; }
+        /// <summary>
+        /// дата начала приема
+        /// </summary>
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public string? Status { get; set; } = string.Empty;
         public bool IsNewPatient { get; set; }
         public FullDoctorInfoViewModel? Doctor { get; set; }
         public PatientViewModel? Patient  { get; set; }
