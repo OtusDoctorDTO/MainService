@@ -3,19 +3,19 @@ using HelpersDTO.Patient;
 using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Areas.Admin.Models;
 using MassTransit;
-using MassTransit.Transports;
 using Microsoft.AspNetCore.Mvc;
+using Services.Abstractions;
 
 namespace MainServiceWebApi.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class PatientController(
         ILogger<AppointmentController> logger,
-        IRequestClient<CreateNewPassportRequest> client) : Controller
+        IRequestClient<CreateNewPassportRequest> client, IAppointmentService appointmentService) : Controller
     {
         private readonly ILogger<AppointmentController> _logger = logger;
         private readonly IRequestClient<CreateNewPassportRequest> _client = client;
-
+        private readonly IAppointmentService _appointmentService = appointmentService;
 
         public IActionResult CreateNewContract(Guid? id = null, Guid? userId = null)
         {
@@ -43,12 +43,19 @@ namespace MainServiceWebApi.Areas.Admin.Controllers
                         },
                         UserId = model.UserId
                     };
-                    var responce = await _client.GetResponse<CreateNewPassportDtoResponse>(data);
-
-                    _logger.LogInformation("Получен ответ CreateNewPassportDtoResponse {responce}", responce.Message);
+                    var response = await _client.GetResponse<CreateNewPassportDtoResponse>(data);
+                    _logger.LogInformation("Получен ответ CreateNewPassportDtoResponse {response}", response.Message);
+                    if (response?.Message?.Success ?? false)
+                    {
+                        var result = await _appointmentService.UpdateStatusAsync(model.AppointmentId!.Value, (int)StatusEnum.InProccess, model.UserId!.Value);
+                        if (result)
+                            return View("Sucsess");
+                        ModelState.AddModelError("", "При попытке создания договора произошла ошибка");
+                    }
                 }
                 catch (Exception e)
                 {
+                    ModelState.AddModelError("", "При попытке создания договора произошла ошибка");
                     _logger.LogError(e, "Произошла ошибка CreateNewPassportRequest");
                 }
             }

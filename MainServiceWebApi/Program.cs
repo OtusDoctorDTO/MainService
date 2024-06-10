@@ -69,26 +69,11 @@ namespace MainServiceWebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddMassTransit(x =>
             {
-
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(receptionConfig.BusConfig.Host, receptionConfig.BusConfig.Port, receptionConfig.BusConfig.Path, h =>
-                    {
-                        h.Username(receptionConfig.BusConfig.Username);
-                        h.Password(receptionConfig.BusConfig.Password);
-                    });
-
-                    cfg.UseTransaction(_ =>
-                    {
-                        _.Timeout = TimeSpan.FromSeconds(60);
-                        _.IsolationLevel = IsolationLevel.ReadCommitted;
-                    });
-
-                    cfg.ReceiveEndpoint(new TemporaryEndpointDefinition(), e =>
-                    {
-                    });
                     cfg.ConfigureEndpoints(context);
                 });
+
             });
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
