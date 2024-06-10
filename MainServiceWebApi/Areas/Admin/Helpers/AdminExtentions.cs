@@ -32,7 +32,7 @@ namespace MainServiceWebApi.Areas.Admin.Helpers
                 Price = appointment.Price,
                 Date = appointment.Date,
                 Time = appointment.Time,
-                Status = appointment.Status ?? "",
+                Status = appointment.Status ?? ""
             };
         }
     }
