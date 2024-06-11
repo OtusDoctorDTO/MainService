@@ -1,6 +1,7 @@
 ﻿using HelpersDTO.Authentication.DTO.Models;
 using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 
@@ -13,19 +14,22 @@ namespace MainServiceWebApi.Controllers
         private readonly ITokenService _tokenService;
         private readonly IPatientService _patientService;
         ILogger<AuthController> _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public AuthController(
             IAccountService accountService,
             IApplicationConfig config,
             ITokenService tokenService,
             IPatientService patientService,
-            ILogger<AuthController> logger)
+            ILogger<AuthController> logger,
+            IPublishEndpoint publishEndpoint)
         {
             _accountService = accountService;
             _config = config;
             _tokenService = tokenService;
             _patientService = patientService;
             _logger = logger;
+            _publishEndpoint = publishEndpoint;
         }
         public IActionResult Index(string? returnUrl = null)
         {
@@ -124,7 +128,7 @@ namespace MainServiceWebApi.Controllers
                             Email = model.Email,
                             IsNew = true
                         };
-                        await _patientService.AddPatientAsync(patientDto);
+                        await _publishEndpoint.Publish(patientDto);
                     }
 
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
