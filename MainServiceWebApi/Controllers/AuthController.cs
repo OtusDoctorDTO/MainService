@@ -1,8 +1,11 @@
 ﻿using HelpersDTO.Authentication.DTO.Models;
+using HelpersDTO.CallCenter.DTO.Models;
+using HelpersDTO.CallCenter.DTO;
 using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using HelpersDTO.Patient;
 using Services.Abstractions;
 
 namespace MainServiceWebApi.Controllers
@@ -15,6 +18,7 @@ namespace MainServiceWebApi.Controllers
         private readonly IPatientService _patientService;
         ILogger<AuthController> _logger;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IRequestClient<CreatePatientRequest> _client;
 
         public AuthController(
             IAccountService accountService,
@@ -22,7 +26,8 @@ namespace MainServiceWebApi.Controllers
             ITokenService tokenService,
             IPatientService patientService,
             ILogger<AuthController> logger,
-            IPublishEndpoint publishEndpoint)
+            IPublishEndpoint publishEndpoint,
+            IRequestClient<CreatePatientRequest> client)
         {
             _accountService = accountService;
             _config = config;
@@ -30,6 +35,7 @@ namespace MainServiceWebApi.Controllers
             _patientService = patientService;
             _logger = logger;
             _publishEndpoint = publishEndpoint;
+            _client = client;
         }
         public IActionResult Index(string? returnUrl = null)
         {
@@ -115,7 +121,6 @@ namespace MainServiceWebApi.Controllers
                     }
 
                     // Добавление пациента в PatientService
-                    //TODO переделать на асинхронное взаимодействие
                     var userId = registerResponce.UserId;
                     if (userId != null)
                     {
@@ -128,7 +133,21 @@ namespace MainServiceWebApi.Controllers
                             Email = model.Email,
                             IsNew = true
                         };
-                        await _publishEndpoint.Publish(patientDto);
+
+                        var request = new CreatePatientRequest() 
+                        {
+                            Patient = patientDto
+                        };
+                        //отправка сообщения в RabbitMq
+                        await _publishEndpoint.Publish(request);
+                        
+                        var responce = await _client.GetResponse<CreatePatientResponse>(request);
+
+                        _logger.LogInformation("Получен ответ CreatePatientRequest {responce}", responce.Message);
+                        if (responce?.Message?.Success == null)
+                        {
+                            ModelState.AddModelError("","При попытке создания пациента произошла ошибка");
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(model.ReturnUrl))
