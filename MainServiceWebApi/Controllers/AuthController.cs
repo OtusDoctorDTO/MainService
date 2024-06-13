@@ -1,6 +1,4 @@
 ﻿using HelpersDTO.Authentication.DTO.Models;
-using HelpersDTO.CallCenter.DTO.Models;
-using HelpersDTO.CallCenter.DTO;
 using HelpersDTO.Patient.DTO;
 using MainServiceWebApi.Models;
 using MassTransit;
@@ -15,7 +13,6 @@ namespace MainServiceWebApi.Controllers
         private readonly IAccountService _accountService;
         private readonly IApplicationConfig _config;
         private readonly ITokenService _tokenService;
-        private readonly IPatientService _patientService;
         ILogger<AuthController> _logger;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IRequestClient<CreatePatientRequest> _client;
@@ -24,7 +21,6 @@ namespace MainServiceWebApi.Controllers
             IAccountService accountService,
             IApplicationConfig config,
             ITokenService tokenService,
-            IPatientService patientService,
             ILogger<AuthController> logger,
             IPublishEndpoint publishEndpoint,
             IRequestClient<CreatePatientRequest> client)
@@ -32,7 +28,6 @@ namespace MainServiceWebApi.Controllers
             _accountService = accountService;
             _config = config;
             _tokenService = tokenService;
-            _patientService = patientService;
             _logger = logger;
             _publishEndpoint = publishEndpoint;
             _client = client;
@@ -51,23 +46,23 @@ namespace MainServiceWebApi.Controllers
                 if (ModelState.IsValid)
                 {
                     // захешировать пароль
-                    var loginResponce = await _accountService.LoginAsync(new LoginDTO()
+                    var loginResponse = await _accountService.LoginAsync(new LoginDTO()
                     {
                         Email = login.Email ?? "",
                         Password = login.Password ?? "",
                         PhoneNumber = ""
                     });
 
-                    if (!loginResponce?.Flag ?? true)
+                    if (!loginResponse?.Flag ?? true)
                     {
-                        ModelState.AddModelError("", loginResponce?.Message ?? "При авторизации произошла ошибка. Повторите попытку");
+                        ModelState.AddModelError("", loginResponse?.Message ?? "При авторизации произошла ошибка. Повторите попытку");
                         return View("Index", login);
                     }
 
-                    var result = await _tokenService.Validate(loginResponce!.token);
+                    var result = await _tokenService.Validate(loginResponse!.token);
                     if (result)
                     {
-                        HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponce!.token!);
+                        HttpContext.Response.Cookies.Append(_config.CookiesName, loginResponse!.token!);
 
                         if (!string.IsNullOrEmpty(login.ReturnUrl))
                             Redirect(login.ReturnUrl);
@@ -98,7 +93,7 @@ namespace MainServiceWebApi.Controllers
                 if (ModelState.IsValid)
                 {
                     // захешировать пароль
-                    var registerResponce = await _accountService.RegisterAsync(new RegisterDTO()
+                    var registerResponse = await _accountService.RegisterAsync(new RegisterDTO()
                     {
                         Email = model.Email ?? "",
                         Password = model.Password ?? "",
@@ -110,18 +105,18 @@ namespace MainServiceWebApi.Controllers
                         }
                     });
 
-                    if ((!registerResponce?.Flag ?? true) || (registerResponce!.Messages?.Any() ?? false))
+                    if ((!registerResponse?.Flag ?? true) || (registerResponse!.Messages?.Any() ?? false))
                     {
-                        if (registerResponce == null)
+                        if (registerResponse == null)
                         {
                             ModelState.AddModelError("", "Сервис недоступен. Попробуйте позднее");
                         }
-                        registerResponce?.Messages?.ForEach(message => ModelState.AddModelError("", message));
+                        registerResponse?.Messages?.ForEach(message => ModelState.AddModelError("", message));
                         return View(model);
                     }
 
                     // Добавление пациента в PatientService
-                    var userId = registerResponce.UserId;
+                    var userId = registerResponse.UserId;
                     if (userId != null)
                     {
                         var patientDto = new PatientDTO
@@ -138,13 +133,11 @@ namespace MainServiceWebApi.Controllers
                         {
                             Patient = patientDto
                         };
-                        //отправка сообщения в RabbitMq
-                        await _publishEndpoint.Publish(request);
-                        
-                        var responce = await _client.GetResponse<CreatePatientResponse>(request);
 
-                        _logger.LogInformation("Получен ответ CreatePatientRequest {responce}", responce.Message);
-                        if (responce?.Message?.Success == null)
+                        var response = await _client.GetResponse<CreatePatientResponse>(request);
+
+                        _logger.LogInformation("Получен ответ CreatePatientRequest {response}", response.Message);
+                        if (response?.Message?.Success == null)
                         {
                             ModelState.AddModelError("","При попытке создания пациента произошла ошибка");
                         }
