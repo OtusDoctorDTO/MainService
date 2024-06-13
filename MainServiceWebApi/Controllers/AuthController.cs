@@ -14,7 +14,6 @@ namespace MainServiceWebApi.Controllers
         private readonly IApplicationConfig _config;
         private readonly ITokenService _tokenService;
         ILogger<AuthController> _logger;
-        private readonly IPublishEndpoint _publishEndpoint;
         private readonly IRequestClient<CreatePatientRequest> _client;
 
         public AuthController(
@@ -22,14 +21,12 @@ namespace MainServiceWebApi.Controllers
             IApplicationConfig config,
             ITokenService tokenService,
             ILogger<AuthController> logger,
-            IPublishEndpoint publishEndpoint,
             IRequestClient<CreatePatientRequest> client)
         {
             _accountService = accountService;
             _config = config;
             _tokenService = tokenService;
             _logger = logger;
-            _publishEndpoint = publishEndpoint;
             _client = client;
         }
         public IActionResult Index(string? returnUrl = null)
@@ -72,7 +69,7 @@ namespace MainServiceWebApi.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "При авторазиции произошла ошибка");
+                _logger.LogError(e, "При авторизации произошла ошибка");
             }
             ModelState.AddModelError("", "При авторизации произошла ошибка. Повторите попытку");
             return View("Index", login);
@@ -137,7 +134,7 @@ namespace MainServiceWebApi.Controllers
                         var response = await _client.GetResponse<CreatePatientResponse>(request);
 
                         _logger.LogInformation("Получен ответ CreatePatientRequest {response}", response.Message);
-                        if (response?.Message?.Success == null)
+                        if (response?.Message?.Success == false)
                         {
                             ModelState.AddModelError("","При попытке создания пациента произошла ошибка");
                         }
