@@ -133,6 +133,13 @@ namespace MainServiceWebApi.Controllers
 
                         var response = await _client.GetResponse<CreatePatientResponse>(request);
 
+                        if (response == null)
+                        {
+                            _logger.LogError("Не удалось получить ответ от PatientService для CreatePatientRequest");
+                            ModelState.AddModelError("", "При попытке создания пациента произошла ошибка. Попробуйте еще раз.");
+                            return View(model);
+                        }
+
                         _logger.LogInformation("Получен ответ CreatePatientRequest {response}", response.Message);
                         if (response?.Message?.Success == false)
                         {
