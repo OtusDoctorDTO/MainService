@@ -1,3 +1,4 @@
+using HelpersDTO.Patient;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -73,7 +74,7 @@ namespace MainServiceWebApi
                 {
                     cfg.ConfigureEndpoints(context);
                 });
-
+                x.AddRequestClient<CreatePatientRequest>();
             });
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
