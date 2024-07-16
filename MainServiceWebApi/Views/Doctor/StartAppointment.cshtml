@@ -1,0 +1,38 @@
+﻿@model StartAppointmentViewModel
+
+@{
+    ViewData["Title"] = "Начать прием";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="StartAppointment" method="post">
+    <div class="form-group">
+        <label asp-for="DoctorId" class="control-label"></label>
+        <input asp-for="DoctorId" class="form-control" />
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PatientId" class="control-label"></label>
+        <input asp-for="PatientId" class="form-control" />
+        <span asp-validation-for="PatientId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Complaints" class="control-label"></label>
+        <input asp-for="Complaints" class="form-control" />
+        <span asp-validation-for="Complaints" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Recommendations" class="control-label"></label>
+        <input asp-for="Recommendations" class="form-control" />
+        <span asp-validation-for="Recommendations" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Начать прием" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Назад</a>
+</div>
+
