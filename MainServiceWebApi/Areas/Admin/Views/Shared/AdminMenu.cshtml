@@ -2,5 +2,6 @@
 <div class="list-group">
     <a class="list-group-item" asp-area="Admin" asp-controller="Admin" asp-action="Appointments" asp-route-statuses="@(new[] { StatusEnum.BookedByUser } )" asp-route-name="@Model">Записи</a>
     <a class="list-group-item" asp-area="Admin" asp-controller="Admin" asp-action="Doctors" asp-route-name="@Model">График врачей</a>
-    <a class="list-group-item" asp-area="Admin" asp-controller="Admin" asp-action="GetSchedule">Рассписание на сегодня</a>
+    <a class="list-group-item" asp-area="Admin" asp-controller="Admin" asp-action="GetSchedule">Расписание на сегодня</a>
+    <a class="list-group-item" asp-area="Admin" asp-controller="Admin" asp-action="AddDoctor">Добавить врача</a>
 </div>

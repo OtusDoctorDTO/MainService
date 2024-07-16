@@ -12,6 +12,6 @@ namespace MainServiceWebApi.Areas.Admin.Models
         public TimeOnly Time { get; set; }
         public string Status { get; set; } = string.Empty;
         public PatientViewModel? Patient { get; set; }
-        //TODO добавить данные доктора?!
+        public string DoctorName { get; set; }
     }
 }

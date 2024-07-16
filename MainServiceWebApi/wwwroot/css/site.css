@@ -164,3 +164,17 @@ body {
     -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease;
 }
+.nav-pills .nav-link {
+    /* Задаем стили для ссылок вкладок */
+    color: #495057; /* Цвет текста */
+    background-color: #f8f9fa; /* Цвет фона */
+    border-color: #dee2e6; /* Цвет границы */
+}
+
+    .nav-pills .nav-link.active,
+    .nav-pills .nav-link:hover {
+        /* Задаем стили для активной и наведенной ссылки */
+        color: #007bff; /* Цвет текста */
+        background-color: #fff; /* Цвет фона */
+        border-color: #007bff; /* Цвет границы */
+    }

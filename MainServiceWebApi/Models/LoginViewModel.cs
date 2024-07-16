@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace MainServiceWebApi.Models
 {
@@ -12,5 +13,6 @@ namespace MainServiceWebApi.Models
         [StringLength(35, MinimumLength = 4, ErrorMessage = "Пароль должен быть минимум 4 символа, максимум 35 символов")]
         public string? Password { get; set; }
         public string? ReturnUrl { get; set; }
+        public string? Role { get; set; }
     }
 }

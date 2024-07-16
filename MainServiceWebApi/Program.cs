@@ -1,11 +1,11 @@
 using HelpersDTO.Patient;
+using HelpersDTO.AppointmentDto;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Services.Abstractions;
 using Services.Implementations;
 using System.Text;
-using System.Transactions;
 
 namespace MainServiceWebApi
 {
@@ -75,6 +75,7 @@ namespace MainServiceWebApi
                     cfg.ConfigureEndpoints(context);
                 });
                 x.AddRequestClient<CreatePatientRequest>();
+                x.AddRequestClient<CreateAppointmentDtoRequest>();
             });
             builder.Services.AddSingleton(receptionConfig);
             builder.Services.AddTransient<IMainService, MainService>();
@@ -83,6 +84,8 @@ namespace MainServiceWebApi
             builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
             builder.Services.AddTransient<IAppointmentService, AppointmentService>();
             builder.Services.AddTransient<IDoctorService, DoctorService>();
+            builder.Services.AddTransient<IPatientService, PatientService>();
+            builder.Services.AddLogging();
 
             var app = builder.Build();
 
